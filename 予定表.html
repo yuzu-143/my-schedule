@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>韓国旅行の予定表</title>
+  <style>
+    body {
+      background-color: #fef6f9;
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #ff69b4;
+    }
+    table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+    }
+    th {
+      background-color: #ffe4e1;
+      color: #333;
+    }
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+    .details {
+      display: none;
+      padding: 10px;
+      background-color: #fff0f5;
+      border: 1px solid #ddd;
+      margin: 10px auto;
+      width: 80%;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* スマホ対応のメディアクエリ */
+    @media screen and (max-width: 480px) {
+      th, td {
+        padding: 8px;
+        font-size: 0.9em;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <h1>韓国旅行の予定表</h1>
+  <table>
+    <tr>
+      <th>日付</th>
+      <th>場所</th>
+      <th>予定</th>
+    </tr>
+    <tr onclick="toggleDetails('details10')">
+      <td>10月10日</td>
+      <td>ソウル</td>
+      <td>食べ歩き・ショッピング</td>
+    </tr>
+    <tr onclick="toggleDetails('details11')">
+      <td>10月11日</td>
+      <td>ソウル</td>
+      <td>明洞・聖水</td>
+    </tr>
+    <tr onclick="toggleDetails('details12')">
+      <td>10月12日</td>
+      <td>ソウル</td>
+      <td>💖treasureライブ💖</td>
+    </tr>
+    <tr onclick="toggleDetails('details13')">
+      <td>10月13日</td>
+      <td>仁川</td>
+      <td>帰国</td>
+    </tr>
+  </table>
+
+<div id="details10" class="details">
+  <strong>10月10日の詳細予定：</strong><br>
+  07:50 - 関西空港Ｔ2集合<br>
+  09:50 - 出発🛫<br>
+  11:50 - 到着🛬<br>
+  　|　　WOWパスチャージ<br>
+  15:10 - <a href="https://map.naver.com/p/directions/14125964.1401266,4520383.4976038,%EC%88%98%EC%83%89%EC%97%AD%20%EA%B2%BD%EC%9D%98%EC%A4%91%EC%95%99%EC%84%A0,1614,SUBWAY_STATION/14125607.2832349,4520738.0152403,%EC%95%88%EC%98%A8%ED%98%B8%EC%8A%A4%ED%85%94,1301957125,PLACE_POI/-/walk?c=16.00,0,0,0,dh" 
+    target="_blank" 
+    style="color:#007bff; text-decoration:underline;">
+    ホテル
+    </a>
+    到着
+ </div>
+
+  <div id="details11" class="details">
+    <strong>10月11日の詳細予定：</strong><br>
+    06:00 - 起床<br>
+　　　|　　　**水色駅（6号線）**から乗車<br>
+　　　|　　　合井（ハプチョン）駅で 2号線 に乗り換え<br>
+　　　|　　　東大門歴史文化公園駅で 4号線 に乗り換え<br>
+　　　|　　　明洞駅で下車！<br>
+　　　|　　　所要時間：約40〜45分<br>
+　　　|　　　運賃：約1,350ウォン（T-money使用時）<br>
+    09:00 - 明洞朝食<br>
+    11:00 - ソンス<br>
+    13:00 - カフェ<br>
+    15:00 - オリヤン<br>
+    18:00 - 韓国料理で打ち上げ🍲
+  </div>
+
+  <div id="details12" class="details">
+    <strong>10月12日の詳細予定：</strong><br>
+    07:00 - 起床<br>
+    10:30 - 明洞<br>
+    15:00 - KSPO到着！<br>
+  </div>
+<div id="details13" class="details">
+    <strong>10月13日の詳細予定：</strong><br>
+    09:00 - チェックアウト🧳<br>
+    10:30 - 仁川空港T2集合<br>
+    12:40 - フライトで帰国✈️
+  </div>
+
+  <script>
+    function toggleDetails(id) {
+      const details = document.getElementById(id);
+      if (details.style.display === "none" || details.style.display === "") {
+        details.style.display = "block";
+      } else {
+        details.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
