@@ -10,30 +10,38 @@
       font-family: 'Arial', sans-serif;
       padding: 20px;
     }
+
     h1 {
       text-align: center;
       color: #ff69b4;
     }
-    table {
+
+    /* 上の予定表（main-table）用 */
+    .main-table {
       width: 80%;
       margin: 0 auto;
       border-collapse: collapse;
       background-color: #fff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    th, td {
+
+    .main-table th, .main-table td {
       border: 1px solid #ddd;
       padding: 12px;
       text-align: center;
       cursor: pointer;
     }
-    th {
+
+    .main-table th {
       background-color: #ffe4e1;
       color: #333;
     }
-    tr:hover {
+
+    .main-table tr:hover {
       background-color: #f9f9f9;
     }
+
+    /* 詳細表示エリア */
     .details {
       display: none;
       padding: 10px;
@@ -45,50 +53,78 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       animation: fadeIn 0.3s ease-in-out;
     }
- table.details-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-  table-layout: fixed;
-}
 
-table.details-table td {
-  text-align: left;
-  padding: 6px 10px;
-  vertical-align: top;
-  word-break: break-word;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-table.details-table td:first-child {
-  width: 80px;
-  min-width: 60px;
-  text-align: center;
-}
+    /* 詳細テーブル（details-table）用 */
+    table.details-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      table-layout: fixed;
+    }
 
-table.details-table tr:nth-child(even) {
-  background-color: #fffafc;
-}
+    table.details-table td {
+      text-align: left;
+      padding: 6px 10px;
+      vertical-align: top;
+      word-break: break-word;
+      border: 1px solid #ccc;
+    }
 
-@media screen and (max-width: 480px) {
-  th, td {
-    font-size: 14px;
-    padding: 8px;
-  }
-  h1 {
-    font-size: 1.5em;
-  }
-  table.details-table td:first-child {
-    width: 70px;
-  }
-}
+    table.details-table td:first-child {
+      width: 80px;
+      min-width: 60px;
+      text-align: center;
+    }
 
+    table.details-table tr:nth-child(even) {
+      background-color: #fffafc;
+    }
 
+    .grouped td {
+      border: none;
+      background-color: #f9f9f9;
+      border-bottom: 1px dashed #ccc;
+    }
 
+    .grouped tr:first-child td {
+      border-top: 2px solid #aaa;
+    }
+
+    .grouped tr:last-child td {
+      border-bottom: 2px solid #aaa;
+    }
+
+    /* スマホ対応 */
+    @media screen and (max-width: 480px) {
+      .main-table th, .main-table td {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+
+      table.details-table td {
+        font-size: 14px;
+        padding: 6px;
+      }
+
+      table.details-table td:first-child {
+        width: 70px;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>韓国旅行の予定表</h1>
-  <table>
+
+  <table class="main-table">
     <tr>
       <th>日付</th>
       <th>場所</th>
@@ -116,63 +152,33 @@ table.details-table tr:nth-child(even) {
     </tr>
   </table>
 
-<div id="details10" class="details">
-  <strong>10月10日の詳細予定：</strong><br>
-  07:50 - 関西空港Ｔ2集合<br>
-  09:50 - 出発🛫<br>
-  11:50 - 到着🛬<br>
-  　|　　WOWパスチャージ<br>
-  15:10 - <a href="https://map.naver.com/p/directions/14125964.1401266,4520383.4976038,%EC%88%98%EC%83%89%EC%97%AD%20%EA%B2%BD%EC%9D%98%EC%A4%91%EC%95%99%EC%84%A0,1614,SUBWAY_STATION/14125607.2832349,4520738.0152403,%EC%95%88%EC%98%A8%ED%98%B8%EC%8A%A4%ED%85%94,1301957125,PLACE_POI/-/walk?c=16.00,0,0,0,dh" 
-    target="_blank" 
-    style="color:#007bff; text-decoration:underline;">
-    ホテル
-    </a>
-    到着
- </div>
+  <div id="details10" class="details">
+    <strong>10月10日の詳細予定：</strong><br>
+    07:50 - 関西空港Ｔ2集合<br>
+    09:50 - 出発🛫<br>
+    11:50 - 到着🛬<br>
+    　|　　WOWパスチャージ<br>
+    15:10 - https://map.naver.com/p/directions/... 到着
+  </div>
 
- <div id="details11" class="details">
-  <style>
-  .details-table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  .details-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-  }
-  .grouped td {
-    border: none;
-    background-color: #f9f9f9;
-    border-bottom: 1px dashed #ccc;
-  }
-  .grouped tr:first-child td {
-    border-top: 2px solid #aaa;
-  }
-  .grouped tr:last-child td {
-    border-bottom: 2px solid #aaa;
-  }
-</style>
-
-<table class="details-table">
-  <tbody class="grouped">
-    <tr><td>06:00</td><td>起床</td></tr>
-    <tr><td></td><td>水色駅（6号線）から乗車</td></tr>
-    <tr><td></td><td>合井駅で 2号線 に乗り換え</td></tr>
-    <tr><td></td><td>東大門歴史文化公園駅で 4号線 に乗り換え</td></tr>
-    <tr><td></td><td>明洞駅で下車</td></tr>
-    <tr><td></td><td>所要時間：約40〜45分</td></tr>
-    <tr><td></td><td>運賃：約1,350ウォン（T-money使用時）</td></tr>
-  </tbody>
-
-  <tr><td>09:00</td><td>明洞朝食</td></tr>
-  <tr><td>11:00</td><td>ソンス</td></tr>
-  <tr><td>13:00</td><td>カフェ</td></tr>
-  <tr><td>15:00</td><td>オリヤン</td></tr>
-  <tr><td>18:00</td><td>韓国料理で打ち上げ🍲</td></tr>
-</table>
-
-</div>
-
+  <div id="details11" class="details">
+    <table class="details-table">
+      <tbody class="grouped">
+        <tr><td>06:00</td><td>起床</td></tr>
+        <tr><td></td><td>水色駅（6号線）から乗車</td></tr>
+        <tr><td></td><td>合井駅で 2号線 に乗り換え</td></tr>
+        <tr><td></td><td>東大門歴史文化公園駅で 4号線 に乗り換え</td></tr>
+        <tr><td></td><td>明洞駅で下車</td></tr>
+        <tr><td></td><td>所要時間：約40〜45分</td></tr>
+        <tr><td></td><td>運賃：約1,350ウォン（T-money使用時）</td></tr>
+      </tbody>
+      <tr><td>09:00</td><td>明洞朝食</td></tr>
+      <tr><td>11:00</td><td>ソンス</td></tr>
+      <tr><td>13:00</td><td>カフェ</td></tr>
+      <tr><td>15:00</td><td>オリヤン</td></tr>
+      <tr><td>18:00</td><td>韓国料理で打ち上げ🍲</td></tr>
+    </table>
+  </div>
 
   <div id="details12" class="details">
     <strong>10月12日の詳細予定：</strong><br>
@@ -180,7 +186,8 @@ table.details-table tr:nth-child(even) {
     10:30 - 明洞<br>
     15:00 - KSPO到着！<br>
   </div>
-<div id="details13" class="details">
+
+  <div id="details13" class="details">
     <strong>10月13日の詳細予定：</strong><br>
     09:00 - チェックアウト🧳<br>
     10:30 - 仁川空港T2集合<br>
@@ -199,6 +206,7 @@ table.details-table tr:nth-child(even) {
   </script>
 </body>
 </html>
+
 
 
 
