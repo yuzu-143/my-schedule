@@ -16,20 +16,22 @@
       color: #ff69b4;
     }
 
-    /* 上の予定表（main-table）用 */
+    /* メインテーブル（予定表） */
     .main-table {
-      width: 80%;
+      width: 100%;
+      max-width: 800px;
       margin: 0 auto;
       border-collapse: collapse;
       background-color: #fff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      table-layout: fixed;
     }
 
     .main-table th, .main-table td {
       border: 1px solid #ddd;
       padding: 12px;
       text-align: center;
-      cursor: pointer;
+      word-break: break-word;
     }
 
     .main-table th {
@@ -41,6 +43,11 @@
       background-color: #f9f9f9;
     }
 
+    .main-table td:first-child {
+      width: 100px;
+      white-space: nowrap;
+    }
+
     /* 詳細表示エリア */
     .details {
       display: none;
@@ -48,7 +55,8 @@
       background-color: #fff0f5;
       border: 1px solid #ddd;
       margin: 10px auto;
-      width: 80%;
+      width: 100%;
+      max-width: 800px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       animation: fadeIn 0.3s ease-in-out;
@@ -59,7 +67,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 詳細テーブル（details-table）用 */
+    /* 詳細テーブル */
     table.details-table {
       width: 100%;
       border-collapse: collapse;
@@ -79,6 +87,7 @@
       width: 80px;
       min-width: 60px;
       text-align: center;
+      white-space: nowrap;
     }
 
     table.details-table tr:nth-child(even) {
@@ -101,17 +110,21 @@
 
     /* スマホ対応 */
     @media screen and (max-width: 480px) {
-      .main-table th, .main-table td {
-        font-size: 14px;
-        padding: 8px;
-      }
-
       h1 {
         font-size: 1.5em;
       }
 
+      .main-table th, .main-table td {
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      .main-table td:first-child {
+        width: 80px;
+      }
+
       table.details-table td {
-        font-size: 14px;
+        font-size: 13px;
         padding: 6px;
       }
 
@@ -206,6 +219,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
