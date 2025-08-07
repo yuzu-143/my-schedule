@@ -45,27 +45,29 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       animation: fadeIn 0.3s ease-in-out;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    table.details-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 16px;
-    }
-    table.details-table td {
-      text-align: left;
-      padding: 6px 10px;
-      vertical-align: top;
-      word-break: break-word;
-    }
-    table.details-table tr:nth-child(even) {
-      background-color: #fffafc;
-    }
-    
-    /* スマホ対応のメディアクエリ */
-   
+ table.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  table-layout: fixed;
+}
+
+table.details-table td {
+  text-align: left;
+  padding: 6px 10px;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+table.details-table td:first-child {
+  width: 80px;
+  min-width: 60px;
+  text-align: center;
+}
+
+table.details-table tr:nth-child(even) {
+  background-color: #fffafc;
+}
 
 @media screen and (max-width: 480px) {
   th, td {
@@ -75,17 +77,10 @@
   h1 {
     font-size: 1.5em;
   }
+  table.details-table td:first-child {
+    width: 70px;
+  }
 }
-
-table {
-  width: 100%; /* ← 90%〜100%の間で調整してみて！ */
-}
-
-details {
-  white-space: normal;
-  word-break: keep-all; /* ← 単語の途中で改行されないように */
-}
-
 
 
 
@@ -136,21 +131,48 @@ details {
  </div>
 
  <div id="details11" class="details">
-    <table class="details-table">
-      <tr><td>06:00</td><td>起床</td></tr>
-      <tr><td></td><td>水色駅（6号線）から乗車</td></tr>
-      <tr><td></td><td>合井駅で 2号線 に乗り換え</td></tr>
-      <tr><td></td><td>東大門歴史文化公園駅で 4号線 に乗り換え</td></tr>
-      <tr><td></td><td>明洞駅で下車</td></tr>
-      <tr><td></td><td>所要時間：約40〜45分</td></tr>
-      <tr><td></td><td>運賃：約1,350ウォン（T-money使用時）</td></tr>
-      <tr><td>09:00</td><td>明洞朝食</td></tr>
-      <tr><td>11:00</td><td>ソンス</td></tr>
-      <tr><td>13:00</td><td>カフェ</td></tr>
-      <tr><td>15:00</td><td>オリヤン</td></tr>
-      <tr><td>18:00</td><td>韓国料理で打ち上げ🍲</td></tr>
-    </table>
-  </div>
+  <style>
+  .details-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .details-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  .grouped td {
+    border: none;
+    background-color: #f9f9f9;
+    border-bottom: 1px dashed #ccc;
+  }
+  .grouped tr:first-child td {
+    border-top: 2px solid #aaa;
+  }
+  .grouped tr:last-child td {
+    border-bottom: 2px solid #aaa;
+  }
+</style>
+
+<table class="details-table">
+  <tbody class="grouped">
+    <tr><td>06:00</td><td>起床</td></tr>
+    <tr><td></td><td>水色駅（6号線）から乗車</td></tr>
+    <tr><td></td><td>合井駅で 2号線 に乗り換え</td></tr>
+    <tr><td></td><td>東大門歴史文化公園駅で 4号線 に乗り換え</td></tr>
+    <tr><td></td><td>明洞駅で下車</td></tr>
+    <tr><td></td><td>所要時間：約40〜45分</td></tr>
+    <tr><td></td><td>運賃：約1,350ウォン（T-money使用時）</td></tr>
+  </tbody>
+
+  <tr><td>09:00</td><td>明洞朝食</td></tr>
+  <tr><td>11:00</td><td>ソンス</td></tr>
+  <tr><td>13:00</td><td>カフェ</td></tr>
+  <tr><td>15:00</td><td>オリヤン</td></tr>
+  <tr><td>18:00</td><td>韓国料理で打ち上げ🍲</td></tr>
+</table>
+
+</div>
+
 
   <div id="details12" class="details">
     <strong>10月12日の詳細予定：</strong><br>
