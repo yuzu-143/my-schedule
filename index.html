@@ -138,6 +138,30 @@
 }
 
   </style>
+  <style>
+  .popup-image {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    z-index: 1000;
+    background-color: white;
+    border: 2px solid #ccc;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  }
+  .popup-image img {
+    width: 100%;
+  }
+  .close-btn {
+    text-align: right;
+    padding: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>
+
+
 </head>
 <body>
   <h1>韓国旅行の予定表</h1>
@@ -150,13 +174,13 @@
     </tr>
     <tr onclick="toggleDetails('details10')">
       <td>10/10</td>
-      <td>ソウル</td>
-      <td>食べ歩き・ショッピング</td>
+      <td>明洞・弘大</td>
+      <td>換金・ショッピング</td>
     </tr>
     <tr onclick="toggleDetails('details11')">
       <td>10/11</td>
-      <td>ソウル</td>
       <td>明洞・聖水</td>
+      <td></td>
     </tr>
     <tr onclick="toggleDetails('details12')">
       <td>10/12</td>
@@ -175,9 +199,31 @@
     07:50 - 関西空港Ｔ2集合<br>
     09:50 - 出発🛫<br>
     11:50 - 到着🛬<br>
+    13:50 - 空港でご飯<br>
     　|　　WOWパスチャージ<br>
-    15:10 - https://map.naver.com/p/directions/... 到着
-  </div>
+    15:00 -<!-- 表の中に画像リンク -->
+
+  <a href="#" onclick="document.getElementById('img1').style.display='block'; return false;" style="color:#007bff; text-decoration:underline;">
+    空港鉄道から明洞へ🚃<br>
+  </a>
+
+<!-- ポップアップ画像 -->
+<div id="img1" class="popup-image">
+  <div class="close-btn" onclick="document.getElementById('img1').style.display='none';">✖ 閉じる</div>
+  <img>https://drive.google.com/uc?export=view&id=1RKmQgtMyiOWxAwJiYIFnBmMXfK46HOjY
+  https://drive.google.com/uc?export=view&id=1A7aUhnH9_tHM74P715l8lQ-_2AH9P276
+</div>
+
+
+
+
+     15:10 - <a href="https://map.naver.com/p/directions/14125964.1401266,4520383.4976038,%EC%88%98%EC%83%89%EC%97%AD%20%EA%B2%BD%EC%9D%98%EC%A4%91%EC%95%99%EC%84%A0,1614,SUBWAY_STATION/14125607.2832349,4520738.0152403,%EC%95%88%EC%98%A8%ED%98%B8%EC%8A%A4%ED%85%94,1301957125,PLACE_POI/-/walk?c=16.00,0,0,0,dh" 
+    target="_blank" 
+    style="color:#007bff; text-decoration:underline;">
+    ホテル
+    </a>
+    到着
+ </div>
 
   <div id="details11" class="details">
     <table class="details-table">
