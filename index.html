@@ -124,7 +124,7 @@
 
   .main-table td:nth-child(2),
   .main-table th:nth-child(2) {
-    width: 70px; /* 場所列を狭く */
+    width: 80px; /* 場所列を狭く */
     white-space: nowrap;
   }
 
@@ -159,6 +159,30 @@
     cursor: pointer;
     font-weight: bold;
   }
+</style>
+<style>
+  .popup-image{
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9999;
+    /* ← ここを追加 */
+    overflow:auto;
+    -webkit-overflow-scrolling: touch; /* iPhoneでスムーズスクロール */
+  }
+  .popup-image .panel{
+    max-width:min(92vw, 720px);
+    margin:5vh auto;
+    background:#fff;
+    padding:10px;
+    border-radius:10px;
+
+    /* ← ここを追加（中身だけスクロールにする場合）*/
+    max-height:85vh;
+    overflow:auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .popup-image .close-btn{ text-align:right; cursor:pointer; color:#333; font-weight:700; }
+  .popup-image img{ width:100%; height:auto; display:block; margin-top:8px; border-radius:8px; }
 </style>
 
 
@@ -267,6 +291,7 @@
   </script>
 </body>
 </html>
+
 
 
 
