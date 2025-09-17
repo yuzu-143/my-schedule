@@ -183,6 +183,68 @@
   }
   .popup-image .close-btn{ text-align:right; cursor:pointer; color:#333; font-weight:700; }
   .popup-image img{ width:100%; height:auto; display:block; margin-top:8px; border-radius:8px; }
+
+  /* —— タブ —— */
+.tabs { display:flex; gap:8px; justify-content:center; margin:18px 0; flex-wrap:wrap; }
+.tab-btn {
+  padding:10px 16px; border:none; border-radius:999px; cursor:pointer;
+  background:#ffe4e9; color:#333; font-weight:600;
+}
+.tab-btn.active { background:#ff69b4; color:#fff; }
+
+/* タブの中身の表示切替 */
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* —— エリア切り替え（チップ） —— */
+.chips { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:10px 0 16px; }
+.chip {
+  padding:8px 12px; border-radius:999px; border:1px solid #ffb6c1; background:#fff; cursor:pointer;
+  font-size:14px;
+}
+.chip.active { background:#ff69b4; color:#fff; border-color:#ff69b4; }
+
+/* —— 検索バー —— */
+.filters { max-width:800px; margin:0 auto 12px; display:flex; gap:10px; padding:0 8px; }
+.filters input[type="search"] {
+  flex:1; padding:10px 12px; border-radius:10px; border:1px solid #ddd; font-size:14px;
+}
+
+/* —— アコーディオン —— */
+.section { max-width: 1000px; margin:10px auto; }
+.section-header {
+  width:100%; text-align:left; background:#ffeef5; border:none; padding:12px 16px;
+  border-radius:10px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px;
+}
+.section-header .chev { transition: transform .25s; }
+.section-header[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.section-body { display:none; padding:8px 2px 2px; }
+
+/* —— カードグリッド —— */
+.card-grid {
+  display:grid; gap:12px; grid-template-columns: repeat( auto-fill, minmax(260px, 1fr) );
+  max-width:1000px; margin:8px auto 20px; padding:0 8px;
+}
+.card {
+  background:#fff; border:1px solid #eee; border-radius:12px; overflow:hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+}
+.card .thumb {
+  width:100%; aspect-ratio: 4 / 3; object-fit:cover; display:block;
+}
+.card .body { padding:10px 12px; text-align:left; }
+.card .title { font-weight:700; margin:0 0 6px; display:flex; justify-content:space-between; gap:8px; }
+.card .meta { font-size:13px; color:#555; display:grid; gap:4px; }
+.card .meta .row { display:flex; align-items:center; gap:6px; }
+.card .actions { margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
+.card a.map { color:#007bff; text-decoration:underline; font-size:13px; }
+
+/* スマホ微調整 */
+@media (max-width: 480px) {
+  .filters { padding:0 4px; }
+  .card-grid { gap:10px; }
+}
+
 </style>
 
 
@@ -217,6 +279,184 @@
       <td>帰国</td>
     </tr>
   </table>
+
+  <!-- ▼ タブ（予定表 / リスト） -->
+<div class="tabs" role="tablist">
+  <button class="tab-btn active" role="tab" aria-controls="tab-schedule" onclick="showTab('tab-schedule', this)">予定表</button>
+  <button class="tab-btn" role="tab" aria-controls="tab-lists" onclick="showTab('tab-lists', this)">リスト</button>
+</div>
+
+<!-- ▼ リストタブの中身 -->
+<section id="tab-lists" class="tab-content" role="tabpanel" aria-labelledby="tab-lists">
+  <!-- エリア切り替え -->
+  <div class="chips" role="group" aria-label="エリア選択">
+    <button class="chip active" onclick="switchArea('all', this)">すべて</button>
+    <button class="chip" onclick="switchArea('明洞', this)">明洞</button>
+    <button class="chip" onclick="switchArea('弘大', this)">弘大</button>
+    <button class="chip" onclick="switchArea('聖水', this)">聖水</button>
+    <button class="chip" onclick="switchArea('江南', this)">江南</button>
+    <button class="chip" onclick="switchArea('東大門', this)">東大門</button>
+    <button class="chip" onclick="switchArea('仁川', this)">仁川</button>
+  </div>
+
+  <!-- 検索 -->
+  <div class="filters">
+    <input id="searchInput" type="search" placeholder="検索（店名・メモ・エリア）" oninput="applyFilters()">
+  </div>
+
+  <!-- ===== 行きたいところ ===== -->
+  <div class="section" data-category="place">
+    <button class="section-header" aria-expanded="true" onclick="toggleSection(this)">
+      <span class="chev">▶</span> 行きたいところ
+    </button>
+    <div class="section-body" style="display:block;">
+      <div class="card-grid" id="grid-places">
+        <!-- ▼ カード（テンプレート例） -->
+        <!-- 明洞：カフェ例 -->
+        <article class="card" data-area="明洞" data-type="place" data-title="Layered 明洞" data-notes="スコーン有名 韓国カフェ">
+          https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1200
+            https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600
+          </a>
+          <div class="body">
+            <div class="title">
+              <span>Layered 明洞</span>
+              <label><input type="checkbox" data-id="place-layered-md"> 行った</label>
+            </div>
+            <div class="meta">
+              <div class="row">🕒 営業：10:00–21:00</div>
+              <div class="row">🚶 最寄駅：明洞駅（徒歩5分）</div>
+              <div class="row">💰 目安：カフェ 8,000〜15,000₩</div>
+            </div>
+            <div class="actions">
+              https://map.naver.com地図で見る</a>
+              <small>エリア：明洞</small>
+            </div>
+          </div>
+        </article>
+
+        <!-- 弘大：ショップ例 -->
+        <article class="card" data-area="弘大" data-type="place" data-title="KTOWN グッズショップ" data-notes="K-POP グッズ">
+          https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1200
+            https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=600
+          </a>
+          <div class="body">
+            <div class="title">
+              <span>KTOWN グッズショップ</span>
+              <label><input type="checkbox" data-id="place-ktown-hd"> 行った</label>
+            </div>
+            <div class="meta">
+              <div class="row">🕒 営業：11:00–22:00</div>
+              <div class="row">🚶 最寄駅：弘大入口駅（徒歩7分）</div>
+              <div class="row">💰 目安：アルバム 18,000〜22,000₩</div>
+            </div>
+            <div class="actions">
+              <a class="map" href="地図で見る</a>
+              <small>エリア：弘大</small>
+            </div>
+          </div>
+        </article>
+
+        <!-- 聖水：カフェ例 -->
+        <article class="card" data-area="聖水" data-type="place" data-title="聖水カフェ A" data-notes="インテリアが可愛い">
+          https://images.unsplash.com/photo-1541542684-4a7a40a75a17?q=80&w=1200
+            https://images.unsplash.com/photo-1541542684-4a7a40a75a17?q=80&w=600
+          </a>
+          <div class="body">
+            <div class="title">
+              <span>聖水カフェ A</span>
+              <label><input type="checkbox" data-id="place-cafe-ss"> 行った</label>
+            </div>
+            <div class="meta">
+              <div class="row">🕒 営業：10:00–20:00</div>
+              <div class="row">🚶 最寄駅：聖水駅（徒歩6分）</div>
+              <div class="row">💰 目安：ドリンク 6,000〜8,000₩</div>
+            </div>
+            <div class="actions">
+              <ttps://map.naver.com地図で見る</a>
+              <small>エリア：聖水</small>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 買いたいもの ===== -->
+  <div class="section" data-category="buy">
+    <button class="section-header" aria-expanded="true" onclick="toggleSection(this)">
+      <span class="chev">▶</span> 買いたいもの
+    </button>
+    <div class="section-body" style="display:block;">
+      <div class="card-grid" id="grid-buys">
+        <!-- 明洞：コスメ例 -->
+        <article class="card" data-area="明洞" data-type="buy" data-title="HERA ブラッククッション" data-notes="21Nの色味が合いそう">
+          https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=1200
+            https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=600
+          </a>
+          <div class="body">
+            <div class="title">
+              <span>HERA ブラッククッション</span>
+              <label><input type="checkbox" data-id="buy-hera-cushion"> 買った</label>
+            </div>
+            <div class="meta">
+              <div class="row">🛍️ 買える場所：オリーブヤング 明洞本店</div>
+              <div class="row">💰 目安：35,000〜45,000₩（セール時）</div>
+              <div class="row">🚶 最寄駅：明洞駅（徒歩3分）</div>
+            </div>
+            <div class="actions">
+              https://map.naver.com地図で見る</a>
+              <small>エリア：明洞</small>
+            </div>
+          </div>
+        </article>
+
+        <!-- 弘大：マスクショップ例 -->
+        <article class="card" data-area="弘大" data-type="buy" data-title="立体マスク 30枚" data-notes="夜の閉店間際が安い">
+          <a href="https://images.unsplash.com/photo-1584634731339-252c581abfc1?q=80&w=1200" target="_blank"humb" loading="lazy" src="https://images.unsplash.com/photo-1584634731339-252c581abfc1?q=class="body">
+            <div class="title">
+              <span>立体マスク 30枚</span>
+              <label><input type="checkbox" data-id="buy-mask-hd"> 買った</label>
+            </div>
+            <div class="meta">
+              <div class="row">🛍️ 買える場所：マスクショップ（弘大）</div>
+              <div class="row">💰 目安：3,000〜5,000₩</div>
+              <div class="row">🚶 最寄駅：弘大入口駅（徒歩8分）</div>
+            </div>
+            <div class="actions">
+              https://map.naver.com地図で見る</a>
+              <small>エリア：弘大</small>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- ▼ ひな形（コピペ用 / 非表示） -->
+      <template id="card-template">
+        <article class="card" data-area="" data-type="" data-title="" data-notes="">
+          #
+            <img class="thumb" loading="lazy" src="" alt="">
+          </a>
+          <div class="body">
+            <div class="title">
+              <span>タイトル</span>
+              <label><input type="checkbox" data-id=""> チェック</label>
+            </div>
+            <div class="meta">
+              <div class="row">🕒 営業：–</div>
+              <div class="row">🚶 最寄駅：–（徒歩–分）</div>
+              <div class="row">💰 目安：–</div>
+            </div>
+            <div class="actions">
+              #地図で見る</a>
+              <small>エリア：–</small>
+            </div>
+          </div>
+        </article>
+      </template>
+    </div>
+  </div>
+</section>
+
 
   <div id="details10" class="details">
     <strong>10月10日の詳細予定：</strong><br>
@@ -297,9 +537,78 @@
         details.style.display = "none";
       }
     }
+
+    // ===== タブ切替 =====
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const panel = document.getElementById(id);
+  if (panel) panel.classList.add('active');
+  // スクロール位置を少し上に
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== アコーディオン =====
+function toggleSection(headerBtn) {
+  const expanded = headerBtn.getAttribute('aria-expanded') === 'true';
+  headerBtn.setAttribute('aria-expanded', String(!expanded));
+  const body = headerBtn.nextElementSibling;
+  if (body) body.style.display = expanded ? 'none' : 'block';
+}
+
+// ===== エリア切替 & 検索 =====
+let currentArea = 'all';
+function switchArea(area, chipBtn) {
+  currentArea = area;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  if (chipBtn) chipBtn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+  const cards = document.querySelectorAll('#tab-lists .card');
+  cards.forEach(card => {
+    const area = card.getAttribute('data-area') || '';
+    const title = (card.getAttribute('data-title') || '').toLowerCase();
+    const notes = (card.getAttribute('data-notes') || '').toLowerCase();
+    const hitArea = (currentArea === 'all' || currentArea === area);
+    const hitText = (!q || title.includes(q) || notes.includes(q) || area.includes(q));
+    card.style.display = (hitArea && hitText) ? '' : 'none';
+  });
+}
+
+// ===== チェック状態を保存（localStorage） =====
+const CHECK_KEY = 'krtrip_checks_v1';
+function loadChecks() {
+  try {
+    return JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
+  } catch { return {}; }
+}
+function saveChecks(state) {
+  localStorage.setItem(CHECK_KEY, JSON.stringify(state));
+}
+(function initChecks(){
+  const state = loadChecks();
+  document.querySelectorAll('#tab-lists input[type="checkbox"][data-id]').forEach(cb => {
+    const id = cb.getAttribute('data-id');
+    cb.checked = !!state[id];
+    cb.addEventListener('change', () => {
+      const s = loadChecks();
+      s[id] = cb.checked;
+      saveChecks(s);
+    });
+  });
+})();
+
+// 初期適用
+document.addEventListener('DOMContentLoaded', applyFilters);
+
   </script>
 </body>
 </html>
+
 
 
 
