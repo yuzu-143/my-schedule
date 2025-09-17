@@ -137,6 +137,106 @@
   }
 }
 
+/* ===== パターンA：全カードをヘッダー式に統一 ===== */
+
+/* カード全体のベース（既存と競合しない範囲で微調整） */
+.card {
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+}
+
+/* 画像はそのまま（サムネ比率などは既存の .thumb を流用） */
+.card .thumb {
+  width:100%;
+  display:block;
+  aspect-ratio: 4 / 3;   /* 既に指定済みなら不要 */
+  object-fit: cover;     /* 全体をきれいに収める。全体表示は contain に変更 */
+}
+
+/* —— ヘッダー（タイトル＋チェック） —— */
+.card .header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:10px 12px 8px;
+  background:#fff;
+  border-bottom:1px solid #f1f1f1;
+}
+
+/* タイトルの省略（長い店名でも崩れない） */
+.card .header .title{
+  flex:1;
+  min-width:0;
+  font-weight:700;
+  margin:0;
+}
+.card .header .title span{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* チェックボックスのラベル */
+.card .header label{
+  user-select:none;
+  white-space:nowrap;
+  font-size:14px;
+  color:#333;
+}
+.card .header input[type="checkbox"]{
+  transform: translateY(1px);
+}
+
+/* 本文（メタ情報など） */
+.card .body{
+  padding:10px 12px;
+  text-align:left;
+}
+.card .body .meta{
+  font-size:13px;
+  color:#555;
+  display:grid;
+  gap:4px;
+}
+.card .body .meta .row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* アクション行（地図リンクなど） */
+.card .body .actions{
+  margin-top:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.card a.map{
+  color:#007bff;
+  text-decoration:underline;
+  font-size:13px;
+}
+
+/* —— 既存の .body 内タイトルを非表示（ヘッダーに統一するため） —— */
+/* すでに .body の先頭に .title を置いていた場合に備え、ヘッダーがあるカードだけ隠す */
+.card .header + a + .body .title,
+.card .header + .media + .body .title,
+.card .header + .body .title {
+  display:none !important;
+}
+
+/* スマホ微調整 */
+@media (max-width: 480px) {
+  .card .header { padding:10px 10px 8px; }
+  .card .body   { padding:10px; }
+}
+
+
   </style>
   <style>
   .popup-image {
@@ -266,7 +366,7 @@
     <tr onclick="toggleDetails('details11')">
       <td>10/11</td>
       <td>明洞・聖水</td>
-      <td></td>
+      <td>ショッピング</td>
     </tr>
     <tr onclick="toggleDetails('details12')">
       <td>10/12</td>
@@ -296,7 +396,7 @@
     <button class="chip" onclick="switchArea('聖水', this)">聖水</button>
     <button class="chip" onclick="switchArea('江南', this)">江南</button>
     <button class="chip" onclick="switchArea('東大門', this)">東大門</button>
-    <button class="chip" onclick="switchArea('仁川', this)">仁川</button>
+    <button class="chip" onclick="switchArea('仁川', this)">オリヤン</button>
   </div>
 
   <!-- 検索 -->
@@ -313,59 +413,79 @@
       <div class="card-grid" id="grid-places">
         <!-- ▼ カード（テンプレート例） -->
         <!-- 明洞：カフェ例 -->
-        <article class="card" data-area="明洞" data-type="place" data-title="Layered 明洞" data-notes="スコーン有名 韓国カフェ">
-          https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1200
-            https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600
-          </a>
-          <div class="body">
-            <div class="title">
-              <span>Layered 明洞</span>
-              <label><input type="checkbox" data-id="place-layered-md"> 行った</label>
-            </div>
-            <div class="meta">
-              <div class="row">🕒 営業：10:00–21:00</div>
-              <div class="row">🚶 最寄駅：明洞駅（徒歩5分）</div>
-              <div class="row">💰 目安：カフェ 8,000〜15,000₩</div>
-            </div>
-            <div class="actions">
-              https://map.naver.com地図で見る</a>
-              <small>エリア：明洞</small>
-            </div>
-          </div>
-        </article>
+<article class="card" data-area="明洞" data-type="place"
+         data-title="Layered 明洞" data-notes="スコーン有名 韓国カフェ">
 
-        <!-- 弘大：ショップ例 -->
-        <article class="card" data-area="弘大" data-type="place" data-title="KTOWN グッズショップ" data-notes="K-POP グッズ">
-          https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1200
-            https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=600
-          </a>
-          <div class="body">
-            <div class="title">
-              <span>KTOWN グッズショップ</span>
-              <label><input type="checkbox" data-id="place-ktown-hd"> 行った</label>
-            </div>
-            <div class="meta">
-              <div class="row">🕒 営業：11:00–22:00</div>
-              <div class="row">🚶 最寄駅：弘大入口駅（徒歩7分）</div>
-              <div class="row">💰 目安：アルバム 18,000〜22,000₩</div>
-            </div>
-            <div class="actions">
-              <a class="map" href="地図で見る</a>
-              <small>エリア：弘大</small>
-            </div>
-          </div>
-        </article>
+  <!-- タイトルを画像の上に表示する“ヘッダー” -->
+  <div class="header">
+    <div class="title"><span>Layered 明洞</span></div>
+    <label><input type="checkbox" data-id="place-layered-md"> 行った</label>
+  </div>
+
+  <!-- 画像（大サイズは href、小サイズは src） -->
+  https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1200
+    https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600
+  </a>
+
+  <!-- 本文（メタ情報など） -->
+  <div class="body">
+    <!-- 既存で .body .title を使っていた場合でもCSSで非表示にするので削除不要 -->
+    <div class="meta">
+      <div class="row">🕒 営業：10:00–21:00</div>
+      <div class="row">🚶 最寄駅：明洞駅（徒歩5分）</div>
+      <div class="row">💰 目安：カフェ 8,000〜15,000₩</div>
+    </div>
+    <div class="actions">
+      https://map.naver.com地図で見る</a>
+      <small>エリア：明洞</small>
+    </div>
+  </div>
+</article>
+
+
+<!-- 弘大：ショップ例（パターンA：ヘッダー式） -->
+<article class=
+
+  <!-- タイトル＆チェックはヘッダーへ -->
+  <div class="header">
+    <div class="title"><span>KTOWN グッズショップ</span></div>
+    <label><input type="checkbox" data-id="place-ktown-hd"> 行った</label>
+  </div>
+
+  <!-- 画像：大サイズはhref、小サイズはsrc -->
+  https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1200
+    https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=600
+  </a>
+
+  <!-- 本文 -->
+  <div class="body">
+    <div class="meta">
+      <div class="row">🕒 営業：11:00–22:00</div>
+      <div class="row">🚶 最寄駅：弘大入口駅（徒歩7分）</div>
+      <div class="row">💰 目安：アルバム 18,000〜22,000₩</div>
+    </div>
+    <div class="actions">
+      https://map.naver.com
+         target="_blank" rel="noopener">
+        地図で見る
+      </a>
+      <small>エリア：弘大</small>
+    </div>
+  </div>
+</article>
 
         <!-- 聖水：カフェ例 -->
         <article class="card" data-area="聖水" data-type="place" data-title="聖水カフェ A" data-notes="インテリアが可愛い">
-          https://images.unsplash.com/photo-1541542684-4a7a40a75a17?q=80&w=1200
-            https://images.unsplash.com/photo-1541542684-4a7a40a75a17?q=80&w=600
-          </a>
-          <div class="body">
             <div class="title">
               <span>聖水カフェ A</span>
               <label><input type="checkbox" data-id="place-cafe-ss"> 行った</label>
             </div>
+
+          https://images.unsplash.com/photo-1541542684-4a7a40a75a17?q=80&w=1200
+            https://images.unsplash.com/photo-1541542684-4a7a40a75a17?q=80&w=600
+          </a>
+          <div class="body">
+
             <div class="meta">
               <div class="row">🕒 営業：10:00–20:00</div>
               <div class="row">🚶 最寄駅：聖水駅（徒歩6分）</div>
@@ -608,6 +728,8 @@ document.addEventListener('DOMContentLoaded', applyFilters);
   </script>
 </body>
 </html>
+
+
 
 
 
