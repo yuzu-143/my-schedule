@@ -402,7 +402,7 @@
     <button class="chip" onclick="switchArea('聖水', this)">聖水</button>
     <button class="chip" onclick="switchArea('江南', this)">江南</button>
     <button class="chip" onclick="switchArea('東大門', this)">東大門</button>
-    <button class="chip" onclick="switchArea('仁川', this)">オリヤン</button>
+    <button class="chip" onclick="switchArea('オリヤン', this)">オリヤン</button>
   </div>
 
   <!-- 検索 -->
@@ -540,28 +540,25 @@
   <!-- ===== 買いたいもの ===== -->
   <div class="section" data-category="buy">
     <button class="section-header" aria-expanded="true" onclick="toggleSection(this)">
-      <span class="chev">▶</span> 買いたいもの
+      <span class="자작나무 수분 선크림">▶</span> 買いたいもの
     </button>
     <div class="section-body" style="display:block;">
       <div class="card-grid" id="grid-buys">
-        <!-- 明洞：コスメ例 -->
-        <article class="card" data-area="明洞" data-type="buy" data-title="HERA ブラッククッション" data-notes="21Nの色味が合いそう">
-          https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=1200
-            https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=600
-          </a>
+        <!-- オリヤン：コスメ例 -->
+        <article class="card" data-area="オリヤン" data-type="buy" data-title="자작나무 수분 선크림" data-notes="オリヤン1位">
           <div class="body">
             <div class="title">
-              <span>HERA ブラッククッション</span>
+              <span>자작나무 수분 선크림</span>
               <label><input type="checkbox" data-id="buy-hera-cushion"> 買った</label>
             </div>
+              <!-- 画像（大サイズは href、小サイズは src） -->
+  <img class="responsive-img" src="https://imgur.com/YHIQxNU" alt="日焼け止め">
             <div class="meta">
-              <div class="row">🛍️ 買える場所：オリーブヤング 明洞本店</div>
-              <div class="row">💰 目安：35,000〜45,000₩（セール時）</div>
-              <div class="row">🚶 最寄駅：明洞駅（徒歩3分）</div>
+              <div class="row">🛍️ 買える場所：オリーブヤング</div>
+              <div class="row">💰 目安：25,000₩（50ml）</div>
             </div>
             <div class="actions">
-              https://map.naver.com地図で見る</a>
-              <small>エリア：明洞</small>
+              <small>エリア：オリヤン</small>
             </div>
           </div>
         </article>
@@ -757,6 +754,7 @@ document.addEventListener('DOMContentLoaded', applyFilters);
   </script>
 </body>
 </html>
+
 
 
 
