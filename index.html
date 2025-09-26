@@ -779,22 +779,6 @@ function applyFilters() {
     card.style.display = (hitArea && hitText) ? '' : 'none';
   });
   
-// 🔽 ここから追加！
-  const placeSection = document.querySelector('[data-category="place"] .section-body');
-  const placeHeader = document.querySelector('[data-category="place"] .section-header');
-
-  if (currentArea === 'オリヤン') {
-    placeSection.style.display = 'none';
-    placeHeader.setAttribute('aria-expanded', 'false');
-    placeHeader.querySelector('.chev').textContent = '▶';
-  } else {
-    placeSection.style.display = 'block';
-    placeHeader.setAttribute('aria-expanded', 'true');
-    placeHeader.querySelector('.chev').textContent = '▼';
-  }
-}
-
-
 // ===== チェック状態を保存（localStorage） =====
 const CHECK_KEY = 'krtrip_checks_v1';
 function loadChecks() {
@@ -824,6 +808,7 @@ document.addEventListener('DOMContentLoaded', applyFilters);
   </script>
 </body>
 </html>
+
 
 
 
