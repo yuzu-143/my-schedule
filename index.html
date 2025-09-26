@@ -339,16 +339,23 @@
 .card .actions { margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
 .card a.map { color:#007bff; text-decoration:underline; font-size:13px; }
 
-/* スマホ微調整 */
+  /* ー スマホー :/
 @media (max-width: 480px) {
-  .filters { padding:0 4px; }
-  .card-grid { gap:10px; }
+  .responsive-img {
+    width: 100%;
+    height: 140px; /* ← 高さを固定！ */
+    object-fit: cover; /* ← 画像を切れずに綺麗に収める */
+    display: block;
+    border-radius: 8px;
+  }
 }
 
 .responsive-img {
   width: 100%;
-  max-width: 300px;
-  height: auto;
+  height: 180px; /* ← 高さを固定！ */
+  object-fit: cover; /* ← 画像を切れずに綺麗に収める */
+  display: block;
+  border-radius: 8px;
 }
 
 </style>
@@ -832,6 +839,7 @@
 </script>
 </body>
 </html>
+
 
 
 
