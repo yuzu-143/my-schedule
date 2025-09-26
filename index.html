@@ -691,123 +691,93 @@
     12:40 - フライトで帰国✈️
   </div>
 
-  <script>
-    function toggleDetails(id) {
-      const details = document.getElementById(id);
-      if (details.style.display === "none" || details.style.display === "") {
-        details.style.display = "block";
-      } else {
-        details.style.display = "none";
-      }
-    }
-
-    // ===== タブ切替 =====
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  const panel = document.getElementById(id);
-  if (panel) panel.classList.add('active');
-  // スクロール位置を少し上に
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ===== アコーディオン =====
-function toggleSection(headerBtn) {
-  const expanded = headerBtn.getAttribute('aria-expanded') === 'true';
-  headerBtn.setAttribute('aria-expanded', String(!expanded));
-  const body = headerBtn.nextElementSibling;
-  if (body) body.style.display = expanded ? 'none' : 'block';
-}
-
-let currentArea = 'all';
-
-function switchArea(area, chipBtn) {
-  currentArea = area;
-
-  // チップの選択状態を更新
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  if (chipBtn) chipBtn.classList.add('active');
-
-  // カード表示の切り替え
-  document.querySelectorAll('.card').forEach(card => {
-    const cardArea = card.getAttribute('data-area');
-    const cardType = card.getAttribute('data-type');
-
-    if (area === 'オリヤン') {
-      card.style.display = (cardArea === 'オリヤン' && cardType === 'buy') ? '' : 'none';
+<script>
+  // ===== 詳細表示の切り替え =====
+  function toggleDetails(id) {
+    const details = document.getElementById(id);
+    if (details.style.display === "none" || details.style.display === "") {
+      details.style.display = "block";
     } else {
-      card.style.display = (area === 'all' || cardArea === area) ? '' : 'none';
+      details.style.display = "none";
     }
-  });
-
-  // セクション開閉の制御
-  const placeSection = document.querySelector('[data-category="place"] .section-body');
-  const buySection = document.querySelector('[data-category="buy"] .section-body');
-
-  const placeHeader = document.querySelector('[data-category="place"] .section-header');
-  const buyHeader = document.querySelector('[data-category="buy"] .section-header');
-
-  if (area === 'オリヤン') {
-    buySection.style.display = 'block';
-    buyHeader.setAttribute('aria-expanded', 'true');
-    buyHeader.querySelector('.chev').textContent = '▼';
-
-    placeSection.style.display = 'none';
-    placeHeader.setAttribute('aria-expanded', 'false');
-    placeHeader.querySelector('.chev').textContent = '▶';
-  } else {
-    buySection.style.display = 'block';
-    buyHeader.setAttribute('aria-expanded', 'true');
-    buyHeader.querySelector('.chev').textContent = '▼';
-
-    placeSection.style.display = 'block';
-    placeHeader.setAttribute('aria-expanded', 'true');
-    placeHeader.querySelector('.chev').textContent = '▼';
   }
-}
 
-function applyFilters() {
-  const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-  const cards = document.querySelectorAll('#tab-lists .card');
-  cards.forEach(card => {
-    const area = card.getAttribute('data-area') || '';
-    const title = (card.getAttribute('data-title') || '').toLowerCase();
-    const notes = (card.getAttribute('data-notes') || '').toLowerCase();
-    const hitArea = (currentArea === 'all' || currentArea === area);
-    const hitText = (!q || title.includes(q) || notes.includes(q) || area.includes(q));
-    card.style.display = (hitArea && hitText) ? '' : 'none';
-  });
-  
-// ===== チェック状態を保存（localStorage） =====
-const CHECK_KEY = 'krtrip_checks_v1';
-function loadChecks() {
-  try {
-    return JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
-  } catch { return {}; }
-}
-function saveChecks(state) {
-  localStorage.setItem(CHECK_KEY, JSON.stringify(state));
-}
-(function initChecks(){
-  const state = loadChecks();
-  document.querySelectorAll('#tab-lists input[type="checkbox"][data-id]').forEach(cb => {
-    const id = cb.getAttribute('data-id');
-    cb.checked = !!state[id];
-    cb.addEventListener('change', () => {
-      const s = loadChecks();
-      s[id] = cb.checked;
-      saveChecks(s);
+  // ===== タブ切替 =====
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const panel = document.getElementById(id);
+    if (panel) panel.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ===== アコーディオン =====
+  function toggleSection(headerBtn) {
+    const expanded = headerBtn.getAttribute('aria-expanded') === 'true';
+    headerBtn.setAttribute('aria-expanded', String(!expanded));
+    const body = headerBtn.nextElementSibling;
+    if (body) body.style.display = expanded ? 'none' : 'block';
+  }
+
+  // ===== エリア切替 =====
+  let currentArea = 'all';
+
+  function switchArea(area, chipBtn) {
+    currentArea = area;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    if (chipBtn) chipBtn.classList.add('active');
+    applyFilters();
+  }
+
+  // ===== 検索＆エリアフィルター =====
+  function applyFilters() {
+    const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+    const cards = document.querySelectorAll('#tab-lists .card');
+    cards.forEach(card => {
+      const area = card.getAttribute('data-area') || '';
+      const title = (card.getAttribute('data-title') || '').toLowerCase();
+      const notes = (card.getAttribute('data-notes') || '').toLowerCase();
+      const hitArea = (currentArea === 'all' || currentArea === area);
+      const hitText = (!q || title.includes(q) || notes.includes(q) || area.includes(q));
+      card.style.display = (hitArea && hitText) ? '' : 'none';
     });
-  });
-})();
+  }
 
-// 初期適用
-document.addEventListener('DOMContentLoaded', applyFilters);
+  // ===== チェック状態を保存（localStorage） =====
+  const CHECK_KEY = 'krtrip_checks_v1';
 
-  </script>
+  function loadChecks() {
+    try {
+      return JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  function saveChecks(state) {
+    localStorage.setItem(CHECK_KEY, JSON.stringify(state));
+  }
+
+  (function initChecks() {
+    const state = loadChecks();
+    document.querySelectorAll('#tab-lists input[type="checkbox"][data-id]').forEach(cb => {
+      const id = cb.getAttribute('data-id');
+      cb.checked = !!state[id];
+      cb.addEventListener('change', () => {
+        const s = loadChecks();
+        s[id] = cb.checked;
+        saveChecks(s);
+      });
+    });
+  })();
+
+  // ===== 初期適用 =====
+  document.addEventListener('DOMContentLoaded', applyFilters);
+</script>
 </body>
 </html>
+
 
 
 
