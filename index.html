@@ -720,13 +720,51 @@ function toggleSection(headerBtn) {
   if (body) body.style.display = expanded ? 'none' : 'block';
 }
 
-// ===== エリア切替 & 検索 =====
 let currentArea = 'all';
+
 function switchArea(area, chipBtn) {
   currentArea = area;
+
+  // チップの選択状態を更新
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   if (chipBtn) chipBtn.classList.add('active');
-  applyFilters();
+
+  // カード表示の切り替え
+  document.querySelectorAll('.card').forEach(card => {
+    const cardArea = card.getAttribute('data-area');
+    const cardType = card.getAttribute('data-type');
+
+    if (area === 'オリヤン') {
+      card.style.display = (cardArea === 'オリヤン' && cardType === 'buy') ? '' : 'none';
+    } else {
+      card.style.display = (area === 'all' || cardArea === area) ? '' : 'none';
+    }
+  });
+
+  // セクション開閉の制御
+  const placeSection = document.querySelector('[data-category="place"] .section-body');
+  const buySection = document.querySelector('[data-category="buy"] .section-body');
+
+  const placeHeader = document.querySelector('[data-category="place"] .section-header');
+  const buyHeader = document.querySelector('[data-category="buy"] .section-header');
+
+  if (area === 'オリヤン') {
+    buySection.style.display = 'block';
+    buyHeader.setAttribute('aria-expanded', 'true');
+    buyHeader.querySelector('.chev').textContent = '▼';
+
+    placeSection.style.display = 'none';
+    placeHeader.setAttribute('aria-expanded', 'false');
+    placeHeader.querySelector('.chev').textContent = '▶';
+  } else {
+    buySection.style.display = 'block';
+    buyHeader.setAttribute('aria-expanded', 'true');
+    buyHeader.querySelector('.chev').textContent = '▼';
+
+    placeSection.style.display = 'block';
+    placeHeader.setAttribute('aria-expanded', 'true');
+    placeHeader.querySelector('.chev').textContent = '▼';
+  }
 }
 
 function applyFilters() {
@@ -771,6 +809,7 @@ document.addEventListener('DOMContentLoaded', applyFilters);
   </script>
 </body>
 </html>
+
 
 
 
