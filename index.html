@@ -692,31 +692,6 @@
   </div>
 
   <script>
-function applyFilters() {
-  const keyword = document.getElementById('searchInput').value.toLowerCase();
-
-  document.querySelectorAll('.card').forEach(card => {
-    const title = card.getAttribute('data-title')?.toLowerCase() || '';
-    const notes = card.getAttribute('data-notes')?.toLowerCase() || '';
-    const area = card.getAttribute('data-area')?.toLowerCase() || '';
-    const type = card.getAttribute('data-type');
-
-    const matchKeyword = title.includes(keyword) || notes.includes(keyword) || area.includes(keyword);
-    const matchArea = currentArea === 'all' || area === currentArea.toLowerCase();
-
-    const shouldShow = matchKeyword && matchArea;
-    card.style.display = shouldShow ? '' : 'none';
-  });
-
-  // 🔽 オリヤンだけ「行きたいところ」セクションを非表示にする
-  const placeSection = document.querySelector('[data-category="place"]');
-  if (currentArea === 'オリヤン') {
-    placeSection.style.display = 'none';
-  } else {
-    placeSection.style.display = '';
-  }
-}
-
     function toggleDetails(id) {
       const details = document.getElementById(id);
       if (details.style.display === "none" || details.style.display === "") {
@@ -803,6 +778,14 @@ function applyFilters() {
     const hitText = (!q || title.includes(q) || notes.includes(q) || area.includes(q));
     card.style.display = (hitArea && hitText) ? '' : 'none';
   });
+
+  // 🔽 ここに追加！オリヤンなら「行きたいところ」セクションを非表示
+  const placeSection = document.querySelector('[data-category="place"]');
+  if (currentArea === 'オリヤン') {
+    placeSection.style.display = 'none';
+  } else {
+    placeSection.style.display = '';
+  }
 }
 
 // ===== チェック状態を保存（localStorage） =====
@@ -834,6 +817,7 @@ document.addEventListener('DOMContentLoaded', applyFilters);
   </script>
 </body>
 </html>
+
 
 
 
