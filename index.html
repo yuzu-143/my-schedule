@@ -339,16 +339,18 @@
 .card .actions { margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
 .card a.map { color:#007bff; text-decoration:underline; font-size:13px; }
 
-  .card .title label {
+.card .title label {
+  flex-grow: 1; /* ← 空いてるスペースを使って広がる */
+  min-width: 0; /* ← 必須：flexアイテムが縮むのを許可 */
   font-size: 13px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: flex;
   align-items: center;
   gap: 4px;
-  overflow: hidden;        /* ← はみ出しを隠す */
-  text-overflow: ellipsis; /* ← 末尾を「…」で省略 */
-  max-width: 100%;         /* ← 幅制限を明示 */
 }
+
 
 
 
@@ -846,6 +848,7 @@
 </script>
 </body>
 </html>
+
 
 
 
