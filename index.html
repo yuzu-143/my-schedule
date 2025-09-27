@@ -374,11 +374,21 @@
     gap: 10px;
   }
 }
-  .card .title {
+.card .title {
   display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column; /* ← 縦並びにする */
+  align-items: flex-start; /* ← 左寄せ */
+  gap: 4px; /* ← 上下の間隔 */
 }
+
+.card .bought-check {
+  font-size: 13px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 
 .card .label-wrap {
   flex-shrink: 0; /* ← ラベルが縮まないようにする */
@@ -858,6 +868,7 @@
 </script>
 </body>
 </html>
+
 
 
 
