@@ -1,949 +1,281 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>韓国旅行の予定表</title>
-  <style>
-    body {
-      background-color: #fef6f9;
-      font-family: 'Arial', sans-serif;
-      padding: 20px;
-    }
 
-    h1 {
-      text-align: center;
-      color: #ff69b4;
-    }
-
-    /* メインテーブル（予定表） */
-    .main-table {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      border-collapse: collapse;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      table-layout: fixed;
-    }
-
-    .main-table th, .main-table td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: center;
-      word-break: break-word;
-    }
-
-    .main-table th {
-      background-color: #ffe4e1;
-      color: #333;
-    }
-
-    .main-table tr:hover {
-      background-color: #f9f9f9;
-    }
-
-    .main-table td:first-child {
-      width: 100px;
-      white-space: nowrap;
-    }
-
-    /* 詳細表示エリア */
-    .details {
-      display: none;
-      padding: 10px;
-      background-color: #fff0f5;
-      border: 1px solid #ddd;
-      margin: 10px auto;
-      width: 100%;
-      max-width: 800px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* 詳細テーブル */
-    table.details-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 16px;
-      table-layout: fixed;
-    }
-
-    table.details-table td {
-      text-align: left;
-      padding: 6px 10px;
-      vertical-align: top;
-      word-break: break-word;
-      border: 1px solid #ccc;
-    }
-
-    table.details-table td:first-child {
-      width: 80px;
-      min-width: 60px;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    table.details-table tr:nth-child(even) {
-      background-color: #fffafc;
-    }
-
-    .grouped td {
-      border: none;
-      background-color: #fdbfe9;
-      border-bottom: 1px dashed #ccc;
-    }
-
-    .grouped tr:first-child td {
-      border-top: 2px solid #aaa;
-    }
-
-    .grouped tr:last-child td {
-      border-bottom: 2px solid #aaa;
-    }
-
-    /* スマホ対応 */
-   @media screen and (max-width: 480px) {
-    
-
-  body {
-    padding: 10px; /* ← 左右の余白を少し減らす */
-  }
-
-  .main-table td:nth-child(1),
-  .main-table th:nth-child(1) {
-    width: 40px; /* 日付列を狭く */
-    white-space: nowrap;
-  }
-
-  .main-table td:nth-child(2),
-  .main-table th:nth-child(2) {
-    width: 90px; /* 場所列を狭く */
-    white-space: nowrap;
-  }
-
-  .main-table td:nth-child(3),
-  .main-table th:nth-child(3) {
-    width: auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-/* ===== パターンA：全カードをヘッダー式に統一 ===== */
-
-/* カード全体のベース（既存と競合しない範囲で微調整） */
-.card {
-  background:#fff;
-  border:1px solid #eee;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,.06);
-}
-
-/* 画像はそのまま（サムネ比率などは既存の .thumb を流用） */
-.card .thumb {
-  width:100%;
-  display:block;
-  aspect-ratio: 4 / 3;   /* 既に指定済みなら不要 */
-  object-fit: cover;     /* 全体をきれいに収める。全体表示は contain に変更 */
-}
-
-/* —— ヘッダー（タイトル＋チェック） —— */
-.card .header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  padding:10px 12px 8px;
-  background:#fff;
-  border-bottom:1px solid #f1f1f1;
-}
-
-/* タイトルの省略（長い店名でも崩れない） */
-.card .header .title{
-  flex:1;
-  min-width:0;
-  font-weight:700;
-  margin:0;
-}
-.card .header .title span{
-  display:block;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-/* チェックボックスのラベル */
-.card .header label{
-  user-select:none;
-  white-space:nowrap;
-  font-size:14px;
-  color:#333;
-}
-.card .header input[type="checkbox"]{
-  transform: translateY(1px);
-}
-
-/* 本文（メタ情報など） */
-.card .body{
-  padding:10px 12px;
-  text-align:left;
-}
-.card .body .meta{
-  font-size:13px;
-  color:#555;
-  display:grid;
-  gap:4px;
-}
-.card .body .meta .row{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-/* アクション行（地図リンクなど） */
-.card .body .actions{
-  margin-top:8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.card a.map{
-  color:#007bff;
-  text-decoration:underline;
-  font-size:13px;
-}
-
-/* —— 既存の .body 内タイトルを非表示（ヘッダーに統一するため） —— */
-/* すでに .body の先頭に .title を置いていた場合に備え、ヘッダーがあるカードだけ隠す */
-.card .header + a + .body .title,
-.card .header + .media + .body .title,
-.card .header + .body .title {
-  display:none !important;
-}
-
-/* スマホ微調整 */
-@media (max-width: 480px) {
-  .card .header { padding:10px 10px 8px; }
-  .card .body   { padding:10px; }
-}
-
-
-  </style>
-  <style>
-  .popup-image {
-    display: none;
-    position: fixed;
-    top: 10%;
-    left: 10%;
-    width: 80%;
-    z-index: 1000;
-    background-color: white;
-    border: 2px solid #ccc;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  }
-  .popup-image img {
-    width: 100%;
-  }
-  .close-btn {
-    text-align: right;
-    padding: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-</style>
 <style>
-  .popup-image{
-    display:none; position:fixed; inset:0;
-    background:rgba(0,0,0,.45);
-    z-index:9999;
-    /* ← ここを追加 */
-    overflow:auto;
-    -webkit-overflow-scrolling: touch; /* iPhoneでスムーズスクロール */
-  }
-  .popup-image .panel{
-    max-width:min(92vw, 720px);
-    margin:5vh auto;
-    background:#fff;
-    padding:10px;
-    border-radius:10px;
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{max-width:420px;margin:0 auto;padding:0 0 80px}
+.header{padding:20px 16px 12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.header h1{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.header p{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
+.tabs{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);position:sticky;top:0;z-index:10}
+.tab{flex:1;padding:10px 4px;font-size:12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--color-text-secondary);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab.active{border-bottom-color:#7F77DD;color:#534AB7}
+.tab i{font-size:18px}
+.section{display:none;padding:16px}
+.section.active{display:block}
 
-    /* ← ここを追加（中身だけスクロールにする場合）*/
-    max-height:85vh;
-    overflow:auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .popup-image .close-btn{ text-align:right; cursor:pointer; color:#333; font-weight:700; }
-  .popup-image img{ width:100%; height:auto; display:block; margin-top:8px; border-radius:8px; }
+.day-block{margin-bottom:20px}
+.day-label{font-size:11px;font-weight:500;color:#534AB7;background:#EEEDFE;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.timeline-item{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+.time-col{min-width:44px;font-size:12px;color:var(--color-text-secondary);padding-top:10px}
+.timeline-card{flex:1;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px}
+.timeline-card input{width:100%;border:none;background:transparent;font-size:14px;color:var(--color-text-primary);outline:none}
+.timeline-card input::placeholder{color:var(--color-text-tertiary)}
+.timeline-card .memo{font-size:12px;color:var(--color-text-secondary);border-top:0.5px solid var(--color-border-tertiary);margin-top:6px;padding-top:6px}
+.timeline-card .memo input{font-size:12px;color:var(--color-text-secondary)}
+.add-btn{width:100%;padding:10px;border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;color:var(--color-text-secondary);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
+.add-btn:hover{background:var(--color-background-secondary)}
 
-  /* —— タブ —— */
-.tabs { display:flex; gap:8px; justify-content:center; margin:18px 0; flex-wrap:wrap; }
-.tab-btn {
-  padding:10px 16px; border:none; border-radius:999px; cursor:pointer;
-  background:#ffe4e9; color:#333; font-weight:600;
-}
-.tab-btn.active { background:#ff69b4; color:#fff; }
+.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;scrollbar-width:none}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-btn{padding:6px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:none;font-size:12px;color:var(--color-text-secondary);cursor:pointer;white-space:nowrap}
+.cat-btn.active{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.wish-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.wish-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;position:relative}
+.wish-img{width:100%;height:110px;object-fit:cover;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:30px}
+.wish-img-placeholder{width:100%;height:110px;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.wish-img-placeholder i{font-size:28px;color:var(--color-text-tertiary)}
+.wish-body{padding:8px 10px}
+.wish-name{font-size:13px;font-weight:500;color:var(--color-text-primary);border:none;background:transparent;width:100%;outline:none}
+.wish-price{font-size:12px;color:var(--color-text-secondary);border:none;background:transparent;width:100%;outline:none;margin-top:2px}
+.wish-delete{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.4);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.wish-check{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.8);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.wish-check.done{background:#7F77DD;border-color:#7F77DD}
+.add-wish-btn{background:var(--color-background-secondary);border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--color-text-secondary);font-size:12px}
+.add-wish-btn i{font-size:28px}
 
-/* タブの中身の表示切替 */
-.tab-content { display:none; }
-.tab-content.active { display:block; }
+.shop-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.shop-icon{width:40px;height:40px;border-radius:var(--border-radius-md);background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.shop-icon i{font-size:20px;color:#534AB7}
+.shop-info{flex:1;min-width:0}
+.shop-info input{width:100%;border:none;background:transparent;outline:none;font-size:14px;color:var(--color-text-primary)}
+.shop-info input.sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.shop-done{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.shop-done.done{background:#7F77DD;border-color:#7F77DD;color:#fff}
 
-/* —— エリア切り替え（チップ） —— */
-.chips { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:10px 0 16px; }
-.chip {
-  padding:8px 12px; border-radius:999px; border:1px solid #ffb6c1; background:#fff; cursor:pointer;
-  font-size:14px;
-}
-.chip.active { background:#ff69b4; color:#fff; border-color:#ff69b4; }
+.check-section{margin-bottom:20px}
+.check-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.check-item:last-child{border-bottom:none}
+.checkbox{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.checkbox.done{background:#7F77DD;border-color:#7F77DD}
+.check-text{flex:1;font-size:14px;color:var(--color-text-primary)}
+.check-text.done{text-decoration:line-through;color:var(--color-text-tertiary)}
 
-/* —— 検索バー —— */
-.filters { max-width:800px; margin:0 auto 12px; display:flex; gap:10px; padding:0 8px; }
-.filters input[type="search"] {
-  flex:1; padding:10px 12px; border-radius:10px; border:1px solid #ddd; font-size:14px;
-}
-
-/* —— アコーディオン —— */
-.section { max-width: 1000px; margin:10px auto; }
-.section-header {
-  width:100%; text-align:left; background:#ffeef5; border:none; padding:12px 16px;
-  border-radius:10px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px;
-}
-.section-header .chev { transition: transform .25s; }
-.section-header[aria-expanded="true"] .chev { transform: rotate(90deg); }
-.section-body { display:none; padding:8px 2px 2px; }
-
-/* —— カードグリッド —— */
-.card-grid {
-  display:grid; gap:12px; grid-template-columns: repeat( auto-fill, minmax(260px, 1fr) );
-  max-width:1000px; margin:8px auto 20px; padding:0 8px;
-}
-.card {
-  background:#fff; border:1px solid #eee; border-radius:12px; overflow:hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,.06);
-}
-.card .thumb {
-  width:100%; aspect-ratio: 4 / 3; object-fit:cover; display:block;
-}
-.card .body { padding:10px 12px; text-align:left; }
-.card .title { font-weight:700; margin:0 0 6px; display:flex; justify-content:space-between; gap:8px; }
-.card .meta { font-size:13px; color:#555; display:grid; gap:4px; }
-.card .meta .row { display:flex; align-items:center; gap:6px; }
-.card .actions { margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
-.card a.map { color:#007bff; text-decoration:underline; font-size:13px; }
-
-.card .title label {
-  flex-grow: 1; /* ← 空いてるスペースを使って広がる */
-  min-width: 0; /* ← 必須：flexアイテムが縮むのを許可 */
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-
-
-
-/* 共通の画像スタイル（PC・スマホ両方） */
-.responsive-img {
-  width: 100%;
-  height: 180px; /* ← 高さを固定 */
-  object-fit: cover;
-  display: block;
-  border-radius: 8px;
-}
-
-/* スマホ用に高さだけ少し調整（必要なら） */
-@media (max-width: 480px) {
-  .responsive-img {
-    height: 140px; /* ← スマホ用に少し小さく */
-  }
-
-  .card-grid {
-    grid-template-columns: repeat(2, 1fr); /* ← 2個並べる */
-    gap: 10px;
-  }
-}
-.card .title {
-  display: flex;
-  flex-direction: column; /* ← 縦並びにする */
-  align-items: flex-start; /* ← 左寄せ */
-  gap: 4px; /* ← 上下の間隔 */
-}
-
-.card .bought-check {
-  font-size: 13px;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-
-.card .label-wrap {
-  flex-shrink: 0; /* ← ラベルが縮まないようにする */
-}
-
-
+input[type=file]{display:none}
 </style>
 
+<div class="app">
+  <div class="header">
+    <h1>✈️ 韓国旅行 2025</h1>
+    <p>6月20日（金）〜 6月22日（日）· 2泊3日</p>
+  </div>
 
-</head>
-<body>
-  <h1>韓国旅行の予定表</h1>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('schedule',this)"><i class="ti ti-calendar" aria-hidden="true"></i>日程</button>
+    <button class="tab" onclick="switchTab('wish',this)"><i class="ti ti-shopping-bag" aria-hidden="true"></i>買いもの</button>
+    <button class="tab" onclick="switchTab('shops',this)"><i class="ti ti-map-pin" aria-hidden="true"></i>お店</button>
+    <button class="tab" onclick="switchTab('pack',this)"><i class="ti ti-briefcase" aria-hidden="true"></i>持ちもの</button>
+  </div>
 
-  <table class="main-table">
-    <tr>
-      <th>日付</th>
-      <th>場所</th>
-      <th>予定</th>
-    </tr>
-    <tr onclick="toggleDetails('details10')">
-      <td>10/10</td>
-      <td>蚕室洞</td>
-      <td>ロッテワールド</td>
-    </tr>
-    <tr onclick="toggleDetails('details11')">
-      <td>10/11</td>
-      <td>明洞・聖水</td>
-      <td>ショッピング</td>
-    </tr>
-    <tr onclick="toggleDetails('details12')">
-      <td>10/12</td>
-      <td>KSPO DOME</td>
-      <td>💖treasureライブ💖</td>
-    </tr>
-    <tr onclick="toggleDetails('details13')">
-      <td>10/13</td>
-      <td>仁川</td>
-      <td>帰国</td>
-    </tr>
-  </table>
+  <div id="tab-schedule" class="section active">
+    <div id="days-container"></div>
+  </div>
 
-  <!-- ▼ タブ（予定表 / リスト） -->
-<div class="tabs" role="tablist">
-  <button class="tab-btn active" role="tab" aria-controls="tab-schedule" onclick="showTab('tab-schedule', this)">予定表</button>
-  <button class="tab-btn" role="tab" aria-controls="tab-lists" onclick="showTab('tab-lists', this)">リスト</button>
+  <div id="tab-wish" class="section">
+    <div class="cat-tabs" id="cat-tabs"></div>
+    <div class="wish-grid" id="wish-grid"></div>
+    <input type="file" id="img-input" accept="image/*">
+  </div>
+
+  <div id="tab-shops" class="section">
+    <div id="shops-list"></div>
+    <button class="add-btn" onclick="addShop()"><i class="ti ti-plus" aria-hidden="true"></i>お店を追加</button>
+  </div>
+
+  <div id="tab-pack" class="section">
+    <div id="pack-list"></div>
+  </div>
 </div>
-
-<!-- ▼ リストタブの中身 -->
-<section id="tab-lists" class="tab-content" role="tabpanel" aria-labelledby="tab-lists">
-  <!-- エリア切り替え -->
-  <div class="chips" role="group" aria-label="エリア選択">
-    <button class="chip active" onclick="switchArea('all', this)">すべて</button>
-    <button class="chip" onclick="switchArea('明洞', this)">明洞</button>
-    <button class="chip" onclick="switchArea('弘大', this)">弘大</button>
-    <button class="chip" onclick="switchArea('聖水', this)">聖水</button>
-    <button class="chip" onclick="switchArea('江南', this)">江南</button>
-    <button class="chip" onclick="switchArea('東大門', this)">東大門</button>
-    <button class="chip" onclick="switchArea('オリヤン', this)">オリヤン</button>
-  </div>
-
-  <!-- 検索 -->
-  <div class="filters">
-    <input id="searchInput" type="search" placeholder="検索（店名・メモ・エリア）" oninput="applyFilters()">
-  </div>
-
-  <!-- ===== 行きたいところ ===== -->
-  <div class="section" data-category="place">
-    <button class="section-header" aria-expanded="true" onclick="toggleSection(this)">
-      <span class="chev">▶</span> 行きたいところ
-    </button>
-    <div class="section-body" style="display:block;">
-
-        <!-- ▼ カード（テンプレート例） -->
-        <!-- 明洞：カフェ例 -->
-<article class="card" data-area="明洞" data-type="place"
-         data-title="Layered 明洞" data-notes="スコーン有名 韓国カフェ">
-
-  <!-- タイトルを画像の上に表示する“ヘッダー” -->
-  <div class="header">
-    <div class="title"><span>Layered 明洞</span></div>
-    <label><input type="checkbox" data-id="place-layered-md"> 行った</label>
-  </div>
-
-  <!-- 画像（大サイズは href、小サイズは src） -->
-  https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1200
-    https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600
-  </a>
-
-  <!-- 本文（メタ情報など） -->
-  <div class="body">
-    <!-- 既存で .body .title を使っていた場合でもCSSで非表示にするので削除不要 -->
-    <div class="meta">
-      <div class="row">🕒 営業：10:00–21:00</div>
-      <div class="row">🚶 最寄駅：明洞駅（徒歩5分）</div>
-      <div class="row">💰 目安：カフェ 8,000〜15,000₩</div>
-    </div>
-    <div class="actions">
-      https://map.naver.com地図で見る</a>
-      <small>エリア：明洞</small>
-    </div>
-  </div>
-</article>
-  <!-- 聖水：-->
-<article class="card" data-area="聖水" data-type="place" data-title="Pola at home" data-notes="インテリアが可愛い">
-  <div class="header">
-    <div class="title"><span>Pola at home</span></div>
-    <label><input type="checkbox" data-id="place-cafe-ss"> 行った</label>
-  </div>
-  <div class="body">
-    <img class="thumb" src="https://imgur.com/mzv5pNN.jpg" alt="雑貨屋外観">
-    <div class="meta">
-      <div class="row">🕒 営業：12:00–18:30　休業日：日曜日<br>　土曜日：14:00-18:30</div>
-      <div class="row">🚶 最寄駅：聖水駅（徒歩7分）</div>
-      <div class="row">💰 目安：雑貨 10,000〜80,000₩</div>
-    </div>
-    <div class="actions">
-      <small>エリア：聖水</small>
-    </div>
-  </div>
-</article>
-
-
-      </div>
-    </div>
-  </div>
-  <!-- 聖水：LaLa Basket（明洞形式に統一） -->
-<article class="card" data-area="聖水" data-type="place" data-title="LaLa Basket" data-notes="インテリアが可愛い">
-
-  <!-- ヘッダー：タイトルとチェックボックス -->
-  <div class="header">
-    <div class="title"><span>LaLa Basket</span></div>
-    <label><input type="checkbox" data-id="place-cafe-ss"> 行った</label>
-  </div>
-
-  <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="thumb" src="https://imgur.com/N6mkuZ8.jpg" alt="雑貨屋外観">
-
-  <!-- 本文（メタ情報など） -->
-  <div class="body">
-    <div class="meta">
-      <div class="row">🕒 営業：11:00–20:00</div>
-      <div class="row">🚶 最寄駅：トゥッソム駅（徒歩5分） 聖水駅から10分</div>
-      <div class="row">💰 目安：雑貨 3,000〜40,000₩</div>
-    </div>
-    <div class="actions">
-      <small>エリア：聖水</small>
-    </div>
-  </div>
-</article>
-      </div>
-    </div>
-  </div>
-
-    <!-- 聖水： -->
-<article class="card" data-area="聖水" data-type="place" data-title="Pola at home" data-notes="インテリアが可愛い">
-
-  <!-- ヘッダー：タイトルとチェックボックス -->
-  <div class="header">
-    <div class="title"><span>MADE FANNIE</span></div>
-    <label><input type="checkbox" data-id="place-cafe-ss"> 行った</label>
-  </div>
-
-  <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="thumb" src="https://imgur.com/OAKl1YF.jpg" alt="雑貨屋外観">
-
-  <!-- 本文（メタ情報など） -->
-  <div class="body">
-    <div class="meta">
-      <div class="row">🕒 営業：13:00–18:00<br>
-      土日：12:00-20:00</div>
-      <div class="row">🚶 最寄駅：聖水駅（徒歩9分）</div>
-      <div class="row">💰 目安：雑貨 12,000〜53,000₩</div>
-    </div>
-    <div class="actions">
-      
-      <small>エリア：聖水</small>
-    </div>
-  </div>
-</article>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== 買いたいもの ===== -->
-  <div class="section" data-category="buy">
-    <button class="section-header" aria-expanded="true" onclick="toggleSection(this)">
-      <span class="자작나무 수분 선크림">▶</span> 買いたいもの
-    </button>
-    <div class="section-body" style="display:block;">
-      <div class="card-grid" id="grid-buys">
-        <!-- オリヤン：コスメ例 -->
-        <article class="card" data-area="オリヤン" data-type="buy" data-title="자작나무 수분 선크림" data-notes="オリヤン1位">
-          <div class="body">
-          <div class="title">
-  <label class="bought-check"><input type="checkbox"> 買った</label>
-  <span>자작나무 수분 선크림</span>
-</div>
-          <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="responsive-img" src="https://imgur.com/YHIQxNU.jpg" alt="日焼け止め">
-            <div class="meta">
-              <div class="row">💰 目安：25,000₩（50ml）</div>
-            </div>
-            <div class="actions">
-              <small>エリア：オリヤン</small>
-            </div>
-          </div>
-        </article>
-         <!-- オリヤン：コスメ例 -->
-        <article class="card" data-area="オリヤン" data-type="buy" data-title="저진모공 끌올세럼" data-notes="毛穴美容液">
-          <div class="body">
-            <div class="title">
-  <label class="bought-check"><input type="checkbox"> 買った</label>
-              <span>저진모공 끌올세럼</span>
-  </div>
-              <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="responsive-img" src="https://imgur.com/ydjSJyQ.jpg" alt="毛穴美容液">
-            <div class="meta">
-              <div class="row">💰 目安：24,000₩（30ml）</div>
-            </div>
-            <div class="actions">
-              <small>エリア：オリヤン</small>
-            </div>
-          </div>
-        </article>
-
-   <!-- オリヤン：コスメ例 -->
-        <article class="card" data-area="オリヤン" data-type="buy" data-title="aqua squalane" data-notes="水分クリーム">
-          <div class="body">
-            <div class="title">
-              <label><input type="checkbox" data-id="buy-hera-cushion"> 買った</label>
-              <span>aqua squalane</span>
-              </div>
-              <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="responsive-img" src="https://imgur.com/fBivWTv.jpg" alt="水分クリーム">
-            <div class="meta">
-              <div class="row">💰 目安：25,000₩（60ml）</div>
-            </div>
-            <div class="actions">
-              <small>エリア：オリヤン</small>
-            </div>
-          </div>
-        </article>
-         <!-- オリヤン：消臭剤 -->
-        <article class="card" data-area="オリヤン" data-type="buy" data-title="Snuggle" data-notes="消臭剤">
-          <div class="body">
-            <div class="title">
-              <label><input type="checkbox" data-id="buy-hera-cushion"> 買った</label>
-              <span>Snuggle</span>
-              </div>
-              <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="responsive-img" src="https://imgur.com/YG2C2lH.jpg" alt="消臭剤">
-            <div class="meta">
-              <div class="row">💰 目安：10,000₩（150ml）</div>
-            </div>
-            <div class="actions">
-              <small>エリア：オリヤン</small>
-            </div>
-          </div>
-        </article>
-        
-   <!-- オリヤン：コスメ例 -->
-        <article class="card" data-area="オリヤン" data-type="buy" data-title="w.dressroom" data-notes="ハンドクリーム">
-          <div class="body">
-            <div class="title">
-              <label><input type="checkbox" data-id="buy-hera-cushion"> 買った</label>
-              <span>w.dressroom</span>
-               </div>
-              <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="responsive-img" src="https://imgur.com/EB3wQxZ.jpg" alt="ハンドクリーム">
-            <div class="meta">
-              <div class="row">💰 目安：15,000₩（50ml）</div>
-            </div>
-            <div class="actions">
-              <small>エリア：オリヤン</small>
-            </div>
-          </div>
-        </article>
-         <!-- オリヤン：セラム -->
-        <article class="card" data-area="オリヤン" data-type="buy" data-title="goodal VITA-C27" data-notes="セラム">
-          <div class="body">
-            <div class="title">
-            <label><input type="checkbox" data-id="buy-hera-cushion"> 買った</label>
-              <span>goodal VITA-C27</span>
-            </div>
-              <!-- 画像（大サイズは href、小サイズは src） -->
-  <img class="responsive-img" src="https://imgur.com/xf3lE9g.jpg" alt="セラム">
-            <div class="meta">
-              <div class="row">💰 目安：45,000₩（16ml）</div>
-            </div>
-            <div class="actions">
-              <small>エリア：オリヤン</small>
-            </div>
-          </div>
-        </article>
-
-      <!-- ▼ ひな形（コピペ用 / 非表示） -->
-      <template id="card-template">
-        <article class="card" data-area="" data-type="" data-title="" data-notes="">
-          #
-            <img class="thumb" loading="lazy" src="" alt="">
-          </a>
-          <div class="body">
-            <div class="title">
-              <span>タイトル</span>
-              <label><input type="checkbox" data-id=""> チェック</label>
-            </div>
-            <div class="meta">
-              <div class="row">🕒 営業：–</div>
-              <div class="row">🚶 最寄駅：–（徒歩–分）</div>
-              <div class="row">💰 目安：–</div>
-            </div>
-            <div class="actions">
-              #地図で見る</a>
-              <small>エリア：–</small>
-            </div>
-          </div>
-        </article>
-      </template>
-    </div>
-  </div>
-</section>
-
-
-  <div id="details10" class="details">
-    <strong>10月10日の詳細予定：</strong><br>
-    07:50 - 関西空港Ｔ2集合<br>
-    09:50 - 出発🛫<br>
-    11:50 - 到着🛬<br>
-    14:10 -<!-- 表の中に画像リンク -->
-
-  <a href="#" onclick="document.getElementById('img1').style.display='block'; return false;" style="color:#007bff; text-decoration:underline;">
-    仁川国際空港からロッテワールドへ🚌<br>
-  </a>
-     |　　　　wowpassチャージ<br>
-
-<!-- ポップアップ画像 -->
-<div id="img1" class="popup-image">
-  <div class="close-btn" onclick="document.getElementById('img1').style.display='none';">✖ 閉じる</div>
-  <img src="https://imgur.com/xvSq8lz.jpeg" alt="経路1">
-  <img src="https://imgur.com/AJLGQFs.jpeg" alt="経路2">
-</div>
-
-     15:30 - ロッテワールド着<br>
-     19:00 - ごはん<br>
-     23:30 - 
-     <a href="https://map.naver.com/p/directions/14125964.1401266,4520383.4976038,%EC%88%98%EC%83%89%EC%97%AD%20%EA%B2%BD%EC%9D%98%EC%A4%91%EC%95%99%EC%84%A0,1614,SUBWAY_STATION/14125607.2832349,4520738.0152403,%EC%95%88%EC%98%A8%ED%98%B8%EC%8A%A4%ED%85%94,1301957125,PLACE_POI/-/walk?c=16.00,0,0,0,dh" 
-    target="_blank" 
-    style="color:#007bff; text-decoration:underline;">
-    ホテル
-    </a>
-    到着
- </div>
-
-  <div id="details11" class="details">
-    <strong>10月11日の詳細予定：</strong><br>
-    07:00 - 起床<br>
-    10:30 - 換金[大使館前両替所]<br>
-    15:00 - KSPO到着！<br>
-    17:00 - PULSE ON開演🔥<br>
-    19:30 - 終演<br>
-    20:30 - ご飯<br>
-
-  </div>
-
-  <div id="details12" class="details">
-    <strong>10月12日の詳細予定：</strong><br>
-    07:00 - 起床<br>
-    10:30 - 明洞<br>
-    13:00 - KSPO到着！<br>
-    15:00 - 会場入場<br>
-    17:00 - PULSE ON開演🔥<br>
-    19:30 - 終演<br>
-    20:30 - ご飯<br>
-
-  </div>
-
-  <div id="details13" class="details">
-    <strong>10月13日の詳細予定：</strong><br>
-    09:00 - チェックアウト🧳<br>
-    10:30 - 仁川空港T2集合<br>
-    12:40 - フライトで帰国✈️
-  </div>
 
 <script>
-  // ===== 詳細表示の切り替え =====
-  function toggleDetails(id) {
-    const details = document.getElementById(id);
-    if (details.style.display === "none" || details.style.display === "") {
-      details.style.display = "block";
-    } else {
-      details.style.display = "none";
-    }
-  }
+const DAYS = [
+  {label:"Day 1 · 6月20日（金）",slots:[{t:"移動",p:"フライト・空港到着"},{t:"昼",p:""},{t:"午後",p:""},{t:"夜",p:""}]},
+  {label:"Day 2 · 6月21日（土）",slots:[{t:"午前",p:""},{t:"昼",p:""},{t:"午後",p:""},{t:"夜",p:""}]},
+  {label:"Day 3 · 6月22日（日）",slots:[{t:"午前",p:""},{t:"昼",p:""},{t:"移動",p:"空港・帰国"}]}
+];
 
-  // ===== タブ切替 =====
-  function showTab(id, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    const panel = document.getElementById(id);
-    if (panel) panel.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+const CATS = ["コスメ・スキンケア","ファッション","グッズ・雑貨","食べもの・お菓子"];
+let currentCat = CATS[0];
+let wishes = {};
+CATS.forEach(c => wishes[c] = []);
 
-  // ===== アコーディオン =====
-  function toggleSection(headerBtn) {
-    const expanded = headerBtn.getAttribute('aria-expanded') === 'true';
-    headerBtn.setAttribute('aria-expanded', String(!expanded));
-    const body = headerBtn.nextElementSibling;
-    if (body) body.style.display = expanded ? 'none' : 'block';
-  }
+let shops = [{name:"行きたいカフェ",memo:"エリアメモ"},{name:"ショッピングモール",memo:""}];
+let pendingWishCat = null;
 
-  // ===== エリア切替 =====
-  let currentArea = 'all';
+const PACK = {
+  "パスポート・書類":["パスポート","航空券（印刷/アプリ）","ホテル予約確認書","旅行保険証書","現金（ウォン）"],
+  "ガジェット":["充電器","モバイルバッテリー","変換プラグ（Aタイプ）","イヤホン","カメラ"],
+  "服・アクセサリー":["着替え（3日分）","パジャマ","下着","羽織り物","サングラス"],
+  "コスメ・衛生用品":["日焼け止め","スキンケア","メイク道具","歯ブラシ","常備薬"]
+};
+let packDone = {};
 
-  function switchArea(area, chipBtn) {
-    currentArea = area;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    if (chipBtn) chipBtn.classList.add('active');
-    applyFilters();
-  }
+function buildSchedule(){
+  const c = document.getElementById('days-container');
+  c.innerHTML = '';
+  DAYS.forEach((day,di)=>{
+    const d = document.createElement('div');
+    d.className='day-block';
+    d.innerHTML=`<div class="day-label">${day.label}</div>`;
+    const slots = day.slots.map((s,si)=>`
+      <div class="timeline-item">
+        <div class="time-col">${s.t}</div>
+        <div class="timeline-card">
+          <input placeholder="${s.p||'予定を入力'}" value="${s.p}">
+          <div class="memo"><input placeholder="メモ（お店名・住所など）"></div>
+        </div>
+      </div>`).join('');
+    d.innerHTML += slots;
+    d.innerHTML += `<button class="add-btn" onclick="addSlot(${di})"><i class="ti ti-plus" aria-hidden="true"></i>予定を追加</button>`;
+    c.appendChild(d);
+  });
+}
 
-  // ===== 検索＆エリアフィルター =====
-  function applyFilters() {
-    const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-    const cards = document.querySelectorAll('#tab-lists .card');
-    cards.forEach(card => {
-      const area = card.getAttribute('data-area') || '';
-      const title = (card.getAttribute('data-title') || '').toLowerCase();
-      const notes = (card.getAttribute('data-notes') || '').toLowerCase();
-      const hitArea = (currentArea === 'all' || currentArea === area);
-      const hitText = (!q || title.includes(q) || notes.includes(q) || area.includes(q));
-      card.style.display = (hitArea && hitText) ? '' : 'none';
-    });
-  }
+function addSlot(di){
+  DAYS[di].slots.push({t:"",p:""});
+  buildSchedule();
+}
 
-  // ===== チェック状態を保存（localStorage） =====
-  const CHECK_KEY = 'krtrip_checks_v1';
+function buildCatTabs(){
+  const c = document.getElementById('cat-tabs');
+  c.innerHTML = CATS.map(cat=>`<button class="cat-btn${cat===currentCat?' active':''}" onclick="switchCat('${cat}')">${cat}</button>`).join('');
+}
 
-  function loadChecks() {
-    try {
-      return JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
-    } catch {
-      return {};
-    }
-  }
+function switchCat(cat){
+  currentCat=cat;
+  buildCatTabs();
+  buildWishGrid();
+}
 
-  function saveChecks(state) {
-    localStorage.setItem(CHECK_KEY, JSON.stringify(state));
-  }
+function buildWishGrid(){
+  const g = document.getElementById('wish-grid');
+  const items = wishes[currentCat];
+  g.innerHTML = items.map((w,i)=>`
+    <div class="wish-card" id="wc-${i}">
+      ${w.img?`<img src="${w.img}" style="width:100%;height:110px;object-fit:cover">`:
+        `<div class="wish-img-placeholder" onclick="pickImg(${i})"><i class="ti ti-camera" aria-hidden="true"></i></div>`}
+      <button class="wish-check${w.done?' done':''}" onclick="toggleWish(${i})" aria-label="購入済みにする">
+        ${w.done?'<i class="ti ti-check" aria-hidden="true" style="font-size:12px;color:#fff"></i>':''}
+      </button>
+      <button class="wish-delete" onclick="deleteWish(${i})" aria-label="削除"><i class="ti ti-x" aria-hidden="true"></i></button>
+      <div class="wish-body">
+        <input class="wish-name" placeholder="商品名" value="${w.name||''}">
+        <input class="wish-price" placeholder="予算 (例: ₩15,000)" value="${w.price||''}">
+      </div>
+    </div>`).join('') +
+    `<div class="add-wish-btn" onclick="addWish()"><i class="ti ti-plus" aria-hidden="true"></i><span>追加</span></div>`;
+}
 
-  (function initChecks() {
-    const state = loadChecks();
-    document.querySelectorAll('#tab-lists input[type="checkbox"][data-id]').forEach(cb => {
-      const id = cb.getAttribute('data-id');
-      cb.checked = !!state[id];
-      cb.addEventListener('change', () => {
-        const s = loadChecks();
-        s[id] = cb.checked;
-        saveChecks(s);
-      });
-    });
-  })();
+function addWish(){
+  wishes[currentCat].push({name:'',price:'',img:'',done:false});
+  buildWishGrid();
+  setTimeout(()=>{
+    const inputs = document.querySelectorAll('.wish-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  },50);
+}
 
-  // ===== 初期適用 =====
-  document.addEventListener('DOMContentLoaded', applyFilters);
+function deleteWish(i){
+  wishes[currentCat].splice(i,1);
+  buildWishGrid();
+}
+
+function toggleWish(i){
+  wishes[currentCat][i].done = !wishes[currentCat][i].done;
+  buildWishGrid();
+}
+
+function pickImg(i){
+  pendingWishCat = currentCat;
+  const inp = document.getElementById('img-input');
+  inp._idx = i;
+  inp.click();
+}
+
+document.getElementById('img-input').addEventListener('change',function(){
+  const f = this.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    wishes[pendingWishCat][this._idx].img = e.target.result;
+    buildWishGrid();
+  };
+  r.readAsDataURL(f);
+  this.value='';
+});
+
+function buildShops(){
+  const c = document.getElementById('shops-list');
+  c.innerHTML = shops.map((s,i)=>`
+    <div class="shop-card">
+      <div class="shop-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+      <div class="shop-info">
+        <input value="${s.name}" placeholder="お店・スポット名">
+        <input class="sub" value="${s.memo}" placeholder="エリア・メモ">
+      </div>
+      <button class="shop-done${s.done?' done':''}" onclick="toggleShop(${i})" aria-label="訪問済みにする">
+        ${s.done?'<i class="ti ti-check" aria-hidden="true" style="font-size:14px"></i>':''}
+      </button>
+    </div>`).join('');
+}
+
+function addShop(){
+  shops.push({name:'',memo:'',done:false});
+  buildShops();
+  setTimeout(()=>{
+    const inputs = document.querySelectorAll('.shop-info input');
+    if(inputs.length) inputs[inputs.length-2].focus();
+  },50);
+}
+
+function toggleShop(i){
+  shops[i].done = !shops[i].done;
+  buildShops();
+}
+
+function buildPack(){
+  const c = document.getElementById('pack-list');
+  c.innerHTML = Object.entries(PACK).map(([cat,items])=>`
+    <div class="check-section">
+      <div class="check-label">${cat}</div>
+      ${items.map((item,i)=>{
+        const key = cat+item;
+        const done = !!packDone[key];
+        return `<div class="check-item">
+          <button class="checkbox${done?' done':''}" onclick="togglePack('${key}')" aria-label="${item}をチェック">
+            ${done?'<i class="ti ti-check" aria-hidden="true" style="font-size:12px;color:#fff"></i>':''}
+          </button>
+          <span class="check-text${done?' done':''}">${item}</span>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function togglePack(key){
+  packDone[key] = !packDone[key];
+  buildPack();
+}
+
+function switchTab(name, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+buildSchedule();
+buildCatTabs();
+buildWishGrid();
+buildShops();
+buildPack();
 </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
