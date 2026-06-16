@@ -147,6 +147,7 @@ const PACK={
 };
 let packDone={};
 let pendingIdx=null;
+let pendingCat=null;
 
 function buildSchedule(){
   document.getElementById('days-wrap').innerHTML=DAYS_DATA.map((day,di)=>
@@ -194,11 +195,27 @@ function buildWishes(){
 function addWish(){wishes[curCat].push({name:'',price:'',img:'',done:false});buildWishes();setTimeout(()=>{const n=document.querySelectorAll('.wish-body input.nm');if(n.length)n[n.length-1].focus();},50);}
 function delWish(i){wishes[curCat].splice(i,1);buildWishes();}
 function toggleWish(i){wishes[curCat][i].done=!wishes[curCat][i].done;buildWishes();}
-function pickImg(i){pendingIdx=i;document.getElementById('img-file').click();}
+function pickImg(i){
+  const inp=document.getElementById('img-file');
+  inp.dataset.idx=i;
+  inp.dataset.cat=curCat;
+  inp.click();
+}
 document.getElementById('img-file').addEventListener('change',function(){
-  const f=this.files[0];if(!f||pendingIdx===null)return;
-  const r=new FileReader();r.onload=e=>{wishes[curCat][pendingIdx].img=e.target.result;buildWishes();};
-  r.readAsDataURL(f);this.value='';pendingIdx=null;
+  const f=this.files[0];
+  const idx=parseInt(this.dataset.idx,10);
+  const cat=this.dataset.cat;
+  if(!f||isNaN(idx)||!cat)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    wishes[cat][idx].img=e.target.result;
+    curCat=cat;
+    buildWishes();
+  };
+  r.readAsDataURL(f);
+  this.value='';
+  delete this.dataset.idx;
+  delete this.dataset.cat;
 });
 
 function buildShops(){
