@@ -1,281 +1,241 @@
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>✈️ 韓国旅行 2025</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.app{max-width:420px;margin:0 auto;padding:0 0 80px}
-.header{padding:20px 16px 12px;border-bottom:0.5px solid var(--color-border-tertiary)}
-.header h1{font-size:20px;font-weight:500;color:var(--color-text-primary)}
-.header p{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
-.tabs{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);position:sticky;top:0;z-index:10}
-.tab{flex:1;padding:10px 4px;font-size:12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--color-text-secondary);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
-.tab.active{border-bottom-color:#7F77DD;color:#534AB7}
-.tab i{font-size:18px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#f7f5ff;color:#1a1a2e;min-height:100vh}
+.app{max-width:430px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:90px}
+.header{padding:20px 18px 14px;background:#fff;border-bottom:1px solid #ebebf0}
+.header h1{font-size:20px;font-weight:600;color:#1a1a2e}
+.header p{font-size:13px;color:#888;margin-top:3px}
+.tabs{display:flex;background:#fff;border-bottom:1.5px solid #ebebf0;position:sticky;top:0;z-index:100}
+.tab{flex:1;padding:10px 2px 9px;font-size:11px;background:none;border:none;border-bottom:2.5px solid transparent;color:#aaa;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .15s}
+.tab svg{width:20px;height:20px;stroke:#aaa;fill:none;transition:stroke .15s}
+.tab.active{border-bottom-color:#7F77DD;color:#534AB7;font-weight:500}
+.tab.active svg{stroke:#534AB7}
 .section{display:none;padding:16px}
 .section.active{display:block}
 
-.day-block{margin-bottom:20px}
-.day-label{font-size:11px;font-weight:500;color:#534AB7;background:#EEEDFE;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
-.timeline-item{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
-.time-col{min-width:44px;font-size:12px;color:var(--color-text-secondary);padding-top:10px}
-.timeline-card{flex:1;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px}
-.timeline-card input{width:100%;border:none;background:transparent;font-size:14px;color:var(--color-text-primary);outline:none}
-.timeline-card input::placeholder{color:var(--color-text-tertiary)}
-.timeline-card .memo{font-size:12px;color:var(--color-text-secondary);border-top:0.5px solid var(--color-border-tertiary);margin-top:6px;padding-top:6px}
-.timeline-card .memo input{font-size:12px;color:var(--color-text-secondary)}
-.add-btn{width:100%;padding:10px;border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;color:var(--color-text-secondary);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
-.add-btn:hover{background:var(--color-background-secondary)}
+.day-block{margin-bottom:22px}
+.day-badge{display:inline-block;font-size:11px;font-weight:600;color:#534AB7;background:#EEEDFE;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.tl-row{display:flex;gap:8px;margin-bottom:10px;align-items:flex-start}
+.tl-time{min-width:40px;font-size:11px;color:#aaa;padding-top:12px;text-align:right}
+.tl-card{flex:1;background:#fff;border:1px solid #e8e6f0;border-radius:10px;padding:10px 12px}
+.tl-card input{width:100%;border:none;outline:none;font-size:14px;color:#1a1a2e;background:transparent}
+.tl-card input::placeholder{color:#ccc}
+.memo-row{display:flex;align-items:center;gap:6px;border-top:1px solid #f0eef8;margin-top:8px;padding-top:8px}
+.memo-row svg{width:13px;height:13px;stroke:#bbb;fill:none;flex-shrink:0}
+.memo-row input{font-size:12px;color:#888}
+.add-slot-btn{width:100%;padding:10px;border:1.5px dashed #d8d4f0;border-radius:10px;background:none;color:#aaa;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px}
+.add-slot-btn:active{background:#f7f5ff}
+.add-slot-btn svg{width:16px;height:16px;stroke:#bbb;fill:none}
 
-.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;scrollbar-width:none}
-.cat-tabs::-webkit-scrollbar{display:none}
-.cat-btn{padding:6px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:none;font-size:12px;color:var(--color-text-secondary);cursor:pointer;white-space:nowrap}
-.cat-btn.active{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
-.wish-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.wish-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;position:relative}
-.wish-img{width:100%;height:110px;object-fit:cover;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:30px}
-.wish-img-placeholder{width:100%;height:110px;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.wish-img-placeholder i{font-size:28px;color:var(--color-text-tertiary)}
-.wish-body{padding:8px 10px}
-.wish-name{font-size:13px;font-weight:500;color:var(--color-text-primary);border:none;background:transparent;width:100%;outline:none}
-.wish-price{font-size:12px;color:var(--color-text-secondary);border:none;background:transparent;width:100%;outline:none;margin-top:2px}
-.wish-delete{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.4);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
-.wish-check{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.8);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
-.wish-check.done{background:#7F77DD;border-color:#7F77DD}
-.add-wish-btn{background:var(--color-background-secondary);border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--color-text-secondary);font-size:12px}
-.add-wish-btn i{font-size:28px}
+.cat-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px;scrollbar-width:none}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-pill{padding:7px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;color:#888;cursor:pointer;white-space:nowrap;transition:all .15s}
+.cat-pill.active{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489;font-weight:500}
+.wish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.wish-card{background:#fff;border:1px solid #e8e6f0;border-radius:12px;overflow:hidden;position:relative}
+.wish-thumb{width:100%;height:115px;object-fit:cover}
+.wish-placeholder{width:100%;height:115px;background:#f7f5ff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.wish-placeholder svg{width:30px;height:30px;stroke:#c5c0e0;fill:none}
+.wish-body{padding:9px 10px}
+.wish-body input{width:100%;border:none;outline:none;background:transparent;color:#1a1a2e}
+.wish-body input.nm{font-size:13px;font-weight:500}
+.wish-body input.pr{font-size:12px;color:#888;margin-top:3px}
+.wish-chk{position:absolute;top:7px;left:7px;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);background:rgba(0,0,0,.08);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.wish-chk.done{background:#7F77DD;border-color:#7F77DD}
+.wish-chk svg{width:12px;height:12px;stroke:#fff;fill:none;display:none}
+.wish-chk.done svg{display:block}
+.wish-del{position:absolute;top:7px;right:7px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.35);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.wish-del svg{width:13px;height:13px;stroke:#fff;fill:none}
+.add-wish{background:#f7f5ff;border:1.5px dashed #d8d4f0;border-radius:12px;height:185px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#aaa;font-size:12px}
+.add-wish:active{background:#EEEDFE}
+.add-wish svg{width:28px;height:28px;stroke:#c5c0e0;fill:none}
 
-.shop-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
-.shop-icon{width:40px;height:40px;border-radius:var(--border-radius-md);background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.shop-icon i{font-size:20px;color:#534AB7}
+.shop-card{background:#fff;border:1px solid #e8e6f0;border-radius:10px;padding:12px 14px;margin-bottom:9px;display:flex;gap:10px;align-items:center}
+.shop-icon{width:40px;height:40px;border-radius:10px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.shop-icon svg{width:20px;height:20px;stroke:#534AB7;fill:none}
 .shop-info{flex:1;min-width:0}
-.shop-info input{width:100%;border:none;background:transparent;outline:none;font-size:14px;color:var(--color-text-primary)}
-.shop-info input.sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
-.shop-done{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
-.shop-done.done{background:#7F77DD;border-color:#7F77DD;color:#fff}
+.shop-info input{width:100%;border:none;outline:none;background:transparent;color:#1a1a2e}
+.shop-info input.nm{font-size:14px;font-weight:500}
+.shop-info input.sub{font-size:12px;color:#888;margin-top:3px}
+.shop-vis{width:28px;height:28px;border-radius:50%;border:1.5px solid #ddd;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.shop-vis.done{background:#7F77DD;border-color:#7F77DD}
+.shop-vis svg{width:14px;height:14px;stroke:#ccc;fill:none}
+.shop-vis.done svg{stroke:#fff}
 
-.check-section{margin-bottom:20px}
-.check-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
-.check-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
-.check-item:last-child{border-bottom:none}
-.checkbox{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
-.checkbox.done{background:#7F77DD;border-color:#7F77DD}
-.check-text{flex:1;font-size:14px;color:var(--color-text-primary)}
-.check-text.done{text-decoration:line-through;color:var(--color-text-tertiary)}
-
+.pack-cat{margin-bottom:20px}
+.pack-cat-label{font-size:11px;font-weight:600;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.pack-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #f2f0f8}
+.pack-item:last-child{border-bottom:none}
+.chkbox{width:24px;height:24px;border-radius:50%;border:1.5px solid #ddd;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.chkbox.done{background:#7F77DD;border-color:#7F77DD}
+.chkbox svg{width:13px;height:13px;stroke:#fff;fill:none;display:none}
+.chkbox.done svg{display:block}
+.pack-text{flex:1;font-size:14px;color:#1a1a2e}
+.pack-text.done{text-decoration:line-through;color:#ccc}
 input[type=file]{display:none}
 </style>
-
+</head>
+<body>
 <div class="app">
   <div class="header">
     <h1>✈️ 韓国旅行 2025</h1>
     <p>6月20日（金）〜 6月22日（日）· 2泊3日</p>
   </div>
-
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('schedule',this)"><i class="ti ti-calendar" aria-hidden="true"></i>日程</button>
-    <button class="tab" onclick="switchTab('wish',this)"><i class="ti ti-shopping-bag" aria-hidden="true"></i>買いもの</button>
-    <button class="tab" onclick="switchTab('shops',this)"><i class="ti ti-map-pin" aria-hidden="true"></i>お店</button>
-    <button class="tab" onclick="switchTab('pack',this)"><i class="ti ti-briefcase" aria-hidden="true"></i>持ちもの</button>
+    <button class="tab active" onclick="switchTab('schedule',this)">
+      <svg viewBox="0 0 24 24" stroke-width="1.7"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      日程
+    </button>
+    <button class="tab" onclick="switchTab('wish',this)">
+      <svg viewBox="0 0 24 24" stroke-width="1.7"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      買いもの
+    </button>
+    <button class="tab" onclick="switchTab('shops',this)">
+      <svg viewBox="0 0 24 24" stroke-width="1.7"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      お店
+    </button>
+    <button class="tab" onclick="switchTab('pack',this)">
+      <svg viewBox="0 0 24 24" stroke-width="1.7"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      持ちもの
+    </button>
   </div>
 
-  <div id="tab-schedule" class="section active">
-    <div id="days-container"></div>
-  </div>
-
+  <div id="tab-schedule" class="section active"><div id="days-wrap"></div></div>
   <div id="tab-wish" class="section">
-    <div class="cat-tabs" id="cat-tabs"></div>
+    <div class="cat-scroll" id="cat-scroll"></div>
     <div class="wish-grid" id="wish-grid"></div>
-    <input type="file" id="img-input" accept="image/*">
+    <input type="file" id="img-file" accept="image/*">
   </div>
-
   <div id="tab-shops" class="section">
-    <div id="shops-list"></div>
-    <button class="add-btn" onclick="addShop()"><i class="ti ti-plus" aria-hidden="true"></i>お店を追加</button>
+    <div id="shops-wrap"></div>
+    <button class="add-slot-btn" onclick="addShop()">
+      <svg viewBox="0 0 24 24" stroke-width="1.7"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>お店を追加
+    </button>
   </div>
-
-  <div id="tab-pack" class="section">
-    <div id="pack-list"></div>
-  </div>
+  <div id="tab-pack" class="section"><div id="pack-wrap"></div></div>
 </div>
 
 <script>
-const DAYS = [
-  {label:"Day 1 · 6月20日（金）",slots:[{t:"移動",p:"フライト・空港到着"},{t:"昼",p:""},{t:"午後",p:""},{t:"夜",p:""}]},
-  {label:"Day 2 · 6月21日（土）",slots:[{t:"午前",p:""},{t:"昼",p:""},{t:"午後",p:""},{t:"夜",p:""}]},
-  {label:"Day 3 · 6月22日（日）",slots:[{t:"午前",p:""},{t:"昼",p:""},{t:"移動",p:"空港・帰国"}]}
+const SVG = {
+  pin:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" stroke-width="2.2" fill="none"><polyline points="20 6 9 17 4 12"/></svg>`,
+  x:`<svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  cam:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+};
+
+const DAYS_DATA = [
+  {label:"Day 1 · 6月20日（金）",slots:[{t:"移動",p:"フライト・空港到着",m:""},{t:"昼",p:"",m:""},{t:"午後",p:"",m:""},{t:"夜",p:"",m:""}]},
+  {label:"Day 2 · 6月21日（土）",slots:[{t:"午前",p:"",m:""},{t:"昼",p:"",m:""},{t:"午後",p:"",m:""},{t:"夜",p:"",m:""}]},
+  {label:"Day 3 · 6月22日（日）",slots:[{t:"午前",p:"",m:""},{t:"昼",p:"",m:""},{t:"移動",p:"空港・帰国",m:""}]}
 ];
-
-const CATS = ["コスメ・スキンケア","ファッション","グッズ・雑貨","食べもの・お菓子"];
-let currentCat = CATS[0];
-let wishes = {};
-CATS.forEach(c => wishes[c] = []);
-
-let shops = [{name:"行きたいカフェ",memo:"エリアメモ"},{name:"ショッピングモール",memo:""}];
-let pendingWishCat = null;
-
-const PACK = {
-  "パスポート・書類":["パスポート","航空券（印刷/アプリ）","ホテル予約確認書","旅行保険証書","現金（ウォン）"],
+const CATS=["コスメ・スキンケア","ファッション","グッズ・雑貨","食べもの・お菓子"];
+let curCat=CATS[0];
+let wishes={};CATS.forEach(c=>wishes[c]=[]);
+let shops=[{name:"",memo:"",done:false}];
+const PACK={
+  "パスポート・書類":["パスポート","航空券（印刷 / アプリ）","ホテル予約確認書","旅行保険証書","現金（ウォン）"],
   "ガジェット":["充電器","モバイルバッテリー","変換プラグ（Aタイプ）","イヤホン","カメラ"],
   "服・アクセサリー":["着替え（3日分）","パジャマ","下着","羽織り物","サングラス"],
   "コスメ・衛生用品":["日焼け止め","スキンケア","メイク道具","歯ブラシ","常備薬"]
 };
-let packDone = {};
+let packDone={};
+let pendingIdx=null;
 
 function buildSchedule(){
-  const c = document.getElementById('days-container');
-  c.innerHTML = '';
-  DAYS.forEach((day,di)=>{
-    const d = document.createElement('div');
-    d.className='day-block';
-    d.innerHTML=`<div class="day-label">${day.label}</div>`;
-    const slots = day.slots.map((s,si)=>`
-      <div class="timeline-item">
-        <div class="time-col">${s.t}</div>
-        <div class="timeline-card">
-          <input placeholder="${s.p||'予定を入力'}" value="${s.p}">
-          <div class="memo"><input placeholder="メモ（お店名・住所など）"></div>
-        </div>
-      </div>`).join('');
-    d.innerHTML += slots;
-    d.innerHTML += `<button class="add-btn" onclick="addSlot(${di})"><i class="ti ti-plus" aria-hidden="true"></i>予定を追加</button>`;
-    c.appendChild(d);
-  });
+  document.getElementById('days-wrap').innerHTML=DAYS_DATA.map((day,di)=>
+    `<div class="day-block">
+      <div class="day-badge">${day.label}</div>
+      ${day.slots.map((s,si)=>`
+        <div class="tl-row">
+          <div class="tl-time">${s.t}</div>
+          <div class="tl-card">
+            <input placeholder="${s.p||'予定を入力'}" value="${s.p}" oninput="DAYS_DATA[${di}].slots[${si}].p=this.value">
+            <div class="memo-row">${SVG.pin}<input placeholder="お店名・住所など" value="${s.m}" oninput="DAYS_DATA[${di}].slots[${si}].m=this.value"></div>
+          </div>
+        </div>`).join('')}
+      <button class="add-slot-btn" onclick="addSlot(${di})">${SVG.plus}予定を追加</button>
+    </div>`).join('');
 }
 
 function addSlot(di){
-  DAYS[di].slots.push({t:"",p:""});
+  DAYS_DATA[di].slots.push({t:"",p:"",m:""});
   buildSchedule();
+  setTimeout(()=>{const c=document.querySelectorAll('.day-block')[di];const i=c.querySelectorAll('.tl-card input');if(i.length)i[i.length-2].focus();},50);
 }
 
-function buildCatTabs(){
-  const c = document.getElementById('cat-tabs');
-  c.innerHTML = CATS.map(cat=>`<button class="cat-btn${cat===currentCat?' active':''}" onclick="switchCat('${cat}')">${cat}</button>`).join('');
+function buildCats(){
+  document.getElementById('cat-scroll').innerHTML=CATS.map(c=>`<button class="cat-pill${c===curCat?' active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
 }
+function switchCat(c){curCat=c;buildCats();buildWishes();}
 
-function switchCat(cat){
-  currentCat=cat;
-  buildCatTabs();
-  buildWishGrid();
+function buildWishes(){
+  const items=wishes[curCat];
+  const esc=s=>(s||'').replace(/"/g,'&quot;');
+  document.getElementById('wish-grid').innerHTML=
+    items.map((w,i)=>`
+      <div class="wish-card">
+        ${w.img?`<img class="wish-thumb" src="${w.img}">`:`<div class="wish-placeholder" onclick="pickImg(${i})">${SVG.cam}</div>`}
+        <button class="wish-chk${w.done?' done':''}" onclick="toggleWish(${i})">${SVG.check}</button>
+        <button class="wish-del" onclick="delWish(${i})">${SVG.x}</button>
+        <div class="wish-body">
+          <input class="nm" placeholder="商品名" value="${esc(w.name)}" oninput="wishes[curCat][${i}].name=this.value">
+          <input class="pr" placeholder="予算（例: ₩15,000）" value="${esc(w.price)}" oninput="wishes[curCat][${i}].price=this.value">
+        </div>
+      </div>`).join('')+
+    `<div class="add-wish" onclick="addWish()">${SVG.plus}<span>追加</span></div>`;
 }
-
-function buildWishGrid(){
-  const g = document.getElementById('wish-grid');
-  const items = wishes[currentCat];
-  g.innerHTML = items.map((w,i)=>`
-    <div class="wish-card" id="wc-${i}">
-      ${w.img?`<img src="${w.img}" style="width:100%;height:110px;object-fit:cover">`:
-        `<div class="wish-img-placeholder" onclick="pickImg(${i})"><i class="ti ti-camera" aria-hidden="true"></i></div>`}
-      <button class="wish-check${w.done?' done':''}" onclick="toggleWish(${i})" aria-label="購入済みにする">
-        ${w.done?'<i class="ti ti-check" aria-hidden="true" style="font-size:12px;color:#fff"></i>':''}
-      </button>
-      <button class="wish-delete" onclick="deleteWish(${i})" aria-label="削除"><i class="ti ti-x" aria-hidden="true"></i></button>
-      <div class="wish-body">
-        <input class="wish-name" placeholder="商品名" value="${w.name||''}">
-        <input class="wish-price" placeholder="予算 (例: ₩15,000)" value="${w.price||''}">
-      </div>
-    </div>`).join('') +
-    `<div class="add-wish-btn" onclick="addWish()"><i class="ti ti-plus" aria-hidden="true"></i><span>追加</span></div>`;
-}
-
-function addWish(){
-  wishes[currentCat].push({name:'',price:'',img:'',done:false});
-  buildWishGrid();
-  setTimeout(()=>{
-    const inputs = document.querySelectorAll('.wish-name');
-    if(inputs.length) inputs[inputs.length-1].focus();
-  },50);
-}
-
-function deleteWish(i){
-  wishes[currentCat].splice(i,1);
-  buildWishGrid();
-}
-
-function toggleWish(i){
-  wishes[currentCat][i].done = !wishes[currentCat][i].done;
-  buildWishGrid();
-}
-
-function pickImg(i){
-  pendingWishCat = currentCat;
-  const inp = document.getElementById('img-input');
-  inp._idx = i;
-  inp.click();
-}
-
-document.getElementById('img-input').addEventListener('change',function(){
-  const f = this.files[0];
-  if(!f) return;
-  const r = new FileReader();
-  r.onload = e => {
-    wishes[pendingWishCat][this._idx].img = e.target.result;
-    buildWishGrid();
-  };
-  r.readAsDataURL(f);
-  this.value='';
+function addWish(){wishes[curCat].push({name:'',price:'',img:'',done:false});buildWishes();setTimeout(()=>{const n=document.querySelectorAll('.wish-body input.nm');if(n.length)n[n.length-1].focus();},50);}
+function delWish(i){wishes[curCat].splice(i,1);buildWishes();}
+function toggleWish(i){wishes[curCat][i].done=!wishes[curCat][i].done;buildWishes();}
+function pickImg(i){pendingIdx=i;document.getElementById('img-file').click();}
+document.getElementById('img-file').addEventListener('change',function(){
+  const f=this.files[0];if(!f||pendingIdx===null)return;
+  const r=new FileReader();r.onload=e=>{wishes[curCat][pendingIdx].img=e.target.result;buildWishes();};
+  r.readAsDataURL(f);this.value='';pendingIdx=null;
 });
 
 function buildShops(){
-  const c = document.getElementById('shops-list');
-  c.innerHTML = shops.map((s,i)=>`
+  document.getElementById('shops-wrap').innerHTML=shops.map((s,i)=>`
     <div class="shop-card">
-      <div class="shop-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+      <div class="shop-icon">${SVG.pin}</div>
       <div class="shop-info">
-        <input value="${s.name}" placeholder="お店・スポット名">
-        <input class="sub" value="${s.memo}" placeholder="エリア・メモ">
+        <input class="nm" placeholder="お店・スポット名" value="${s.name}" oninput="shops[${i}].name=this.value">
+        <input class="sub" placeholder="エリア・メモ" value="${s.memo}" oninput="shops[${i}].memo=this.value">
       </div>
-      <button class="shop-done${s.done?' done':''}" onclick="toggleShop(${i})" aria-label="訪問済みにする">
-        ${s.done?'<i class="ti ti-check" aria-hidden="true" style="font-size:14px"></i>':''}
-      </button>
+      <button class="shop-vis${s.done?' done':''}" onclick="toggleShop(${i})">${SVG.check}</button>
     </div>`).join('');
 }
-
-function addShop(){
-  shops.push({name:'',memo:'',done:false});
-  buildShops();
-  setTimeout(()=>{
-    const inputs = document.querySelectorAll('.shop-info input');
-    if(inputs.length) inputs[inputs.length-2].focus();
-  },50);
-}
-
-function toggleShop(i){
-  shops[i].done = !shops[i].done;
-  buildShops();
-}
+function addShop(){shops.push({name:'',memo:'',done:false});buildShops();setTimeout(()=>{const n=document.querySelectorAll('.shop-info input.nm');if(n.length)n[n.length-1].focus();},50);}
+function toggleShop(i){shops[i].done=!shops[i].done;buildShops();}
 
 function buildPack(){
-  const c = document.getElementById('pack-list');
-  c.innerHTML = Object.entries(PACK).map(([cat,items])=>`
-    <div class="check-section">
-      <div class="check-label">${cat}</div>
-      ${items.map((item,i)=>{
-        const key = cat+item;
-        const done = !!packDone[key];
-        return `<div class="check-item">
-          <button class="checkbox${done?' done':''}" onclick="togglePack('${key}')" aria-label="${item}をチェック">
-            ${done?'<i class="ti ti-check" aria-hidden="true" style="font-size:12px;color:#fff"></i>':''}
-          </button>
-          <span class="check-text${done?' done':''}">${item}</span>
-        </div>`;
-      }).join('')}
+  document.getElementById('pack-wrap').innerHTML=Object.entries(PACK).map(([cat,items])=>`
+    <div class="pack-cat">
+      <div class="pack-cat-label">${cat}</div>
+      ${items.map(item=>{const k=cat+'::'+item;const done=!!packDone[k];return`
+        <div class="pack-item">
+          <button class="chkbox${done?' done':''}" onclick="togglePack('${k}')">${SVG.check}</button>
+          <span class="pack-text${done?' done':''}">${item}</span>
+        </div>`;}).join('')}
     </div>`).join('');
 }
+function togglePack(k){packDone[k]=!packDone[k];buildPack();}
 
-function togglePack(key){
-  packDone[key] = !packDone[key];
-  buildPack();
-}
-
-function switchTab(name, btn){
+function switchTab(name,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
 }
 
-buildSchedule();
-buildCatTabs();
-buildWishGrid();
-buildShops();
-buildPack();
+buildSchedule();buildCats();buildWishes();buildShops();buildPack();
 </script>
+</body>
+</html>
