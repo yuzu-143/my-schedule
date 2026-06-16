@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>✈️ 韓国旅行 2026</title>
+<title>✈️ 韓国旅行 2025</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#f7f5ff;color:#1a1a2e;min-height:100vh}
@@ -19,8 +19,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 .section{display:none;padding:16px}
 .section.active{display:block}
 
-.day-block{margin-bottom:22px}
-.day-badge{display:inline-block;font-size:11px;font-weight:600;color:#534AB7;background:#EEEDFE;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+/* ── Schedule ── */
+.day-block{margin-bottom:24px}
+.day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.day-badge{display:inline-block;font-size:11px;font-weight:600;color:#534AB7;background:#EEEDFE;padding:4px 12px;border-radius:20px}
+.mode-toggle{display:flex;background:#f2f0f8;border-radius:8px;padding:2px;gap:2px}
+.mode-btn{padding:4px 10px;border:none;border-radius:6px;font-size:11px;color:#aaa;background:transparent;cursor:pointer;transition:all .15s}
+.mode-btn.active{background:#fff;color:#534AB7;font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* ── 大まかモード ── */
 .tl-row{display:flex;gap:8px;margin-bottom:10px;align-items:flex-start}
 .tl-time{min-width:40px;font-size:11px;color:#aaa;padding-top:12px;text-align:right}
 .tl-card{flex:1;background:#fff;border:1px solid #e8e6f0;border-radius:10px;padding:10px 12px}
@@ -29,17 +36,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 .memo-row{display:flex;align-items:center;gap:6px;border-top:1px solid #f0eef8;margin-top:8px;padding-top:8px}
 .memo-row svg{width:13px;height:13px;stroke:#bbb;fill:none;flex-shrink:0}
 .memo-row input{font-size:12px;color:#888}
+
+/* ── 時間ベースモード ── */
+.timeline-wrap{position:relative;padding-left:14px}
+.timeline-wrap::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:1.5px;background:#EEEDFE}
+.time-entry{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;position:relative}
+.time-dot{width:8px;height:8px;border-radius:50%;background:#7F77DD;border:1.5px solid #fff;box-shadow:0 0 0 1.5px #AFA9EC;flex-shrink:0;margin-top:11px;z-index:1}
+.time-entry-body{flex:1;background:#fff;border:1px solid #e8e6f0;border-radius:10px;padding:8px 12px;display:flex;gap:8px;align-items:center}
+.time-input{width:54px;font-size:13px;font-weight:500;color:#534AB7;border:none;outline:none;background:transparent;text-align:center;flex-shrink:0;padding:0}
+.time-input::placeholder{color:#c5c0e0;font-weight:400}
+.time-divider{width:1px;height:16px;background:#e8e6f0;flex-shrink:0}
+.event-input{flex:1;font-size:14px;color:#1a1a2e;border:none;outline:none;background:transparent}
+.event-input::placeholder{color:#ccc}
+.entry-del{width:20px;height:20px;border-radius:50%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.4}
+.entry-del svg{width:12px;height:12px;stroke:#888;fill:none}
+.entry-del:active{opacity:.8}
+
 .add-slot-btn{width:100%;padding:10px;border:1.5px dashed #d8d4f0;border-radius:10px;background:none;color:#aaa;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px}
 .add-slot-btn:active{background:#f7f5ff}
 .add-slot-btn svg{width:16px;height:16px;stroke:#bbb;fill:none}
 
+/* ── Wish ── */
 .cat-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px;scrollbar-width:none}
 .cat-scroll::-webkit-scrollbar{display:none}
 .cat-pill{padding:7px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;color:#888;cursor:pointer;white-space:nowrap;transition:all .15s}
 .cat-pill.active{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489;font-weight:500}
 .wish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .wish-card{background:#fff;border:1px solid #e8e6f0;border-radius:12px;overflow:hidden;position:relative}
-.wish-thumb{width:100%;height:115px;object-fit:cover}
+.wish-thumb{width:100%;height:115px;object-fit:cover;display:block}
 .wish-placeholder{width:100%;height:115px;background:#f7f5ff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .wish-placeholder svg{width:30px;height:30px;stroke:#c5c0e0;fill:none}
 .wish-body{padding:9px 10px}
@@ -56,6 +80,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 .add-wish:active{background:#EEEDFE}
 .add-wish svg{width:28px;height:28px;stroke:#c5c0e0;fill:none}
 
+/* ── Shops ── */
 .shop-card{background:#fff;border:1px solid #e8e6f0;border-radius:10px;padding:12px 14px;margin-bottom:9px;display:flex;gap:10px;align-items:center}
 .shop-icon{width:40px;height:40px;border-radius:10px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .shop-icon svg{width:20px;height:20px;stroke:#534AB7;fill:none}
@@ -68,6 +93,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 .shop-vis svg{width:14px;height:14px;stroke:#ccc;fill:none}
 .shop-vis.done svg{stroke:#fff}
 
+/* ── Pack ── */
 .pack-cat{margin-bottom:20px}
 .pack-cat-label{font-size:11px;font-weight:600;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
 .pack-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #f2f0f8}
@@ -84,8 +110,8 @@ input[type=file]{display:none}
 <body>
 <div class="app">
   <div class="header">
-    <h1>✈️ 韓国旅行 2026</h1>
-    <p>6月20日（土）〜 6月22日（月）· 2泊3日</p>
+    <h1>✈️ 韓国旅行 2025</h1>
+    <p>6月20日（金）〜 6月22日（日）· 2泊3日</p>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('schedule',this)">
@@ -122,63 +148,136 @@ input[type=file]{display:none}
 </div>
 
 <script>
-const SVG = {
+/* ━━━ SVG icons ━━━ */
+const SVG={
   pin:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
   plus:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
   check:`<svg viewBox="0 0 24 24" stroke-width="2.2" fill="none"><polyline points="20 6 9 17 4 12"/></svg>`,
   x:`<svg viewBox="0 0 24 24" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
   cam:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  clock:`<svg viewBox="0 0 24 24" stroke-width="1.7" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
 };
 
-const DAYS_DATA = [
-  {label:"Day 1 · 6月20日（金）",slots:[{t:"移動",p:"フライト・空港到着",m:""},{t:"昼",p:"",m:""},{t:"午後",p:"",m:""},{t:"夜",p:"",m:""}]},
-  {label:"Day 2 · 6月21日（土）",slots:[{t:"午前",p:"",m:""},{t:"昼",p:"",m:""},{t:"午後",p:"",m:""},{t:"夜",p:"",m:""}]},
-  {label:"Day 3 · 6月22日（日）",slots:[{t:"午前",p:"",m:""},{t:"昼",p:"",m:""},{t:"移動",p:"空港・帰国",m:""}]}
+/* ━━━ デフォルトデータ ━━━ */
+const DEFAULT_DAYS=[
+  {label:"Day 1 · 6月20日（金）",mode:"rough",slots:[{t:"移動",p:"フライト・空港到着",m:""},{t:"昼",p:"",m:""},{t:"午後",p:"",m:""},{t:"夜",p:"",m:""}],entries:[{time:"",event:"フライト・空港到着"},{time:"",event:""},{time:"",event:""}]},
+  {label:"Day 2 · 6月21日（土）",mode:"rough",slots:[{t:"午前",p:"",m:""},{t:"昼",p:"",m:""},{t:"午後",p:"",m:""},{t:"夜",p:"",m:""}],entries:[{time:"",event:""},{time:"",event:""},{time:"",event:""}]},
+  {label:"Day 3 · 6月22日（日）",mode:"rough",slots:[{t:"午前",p:"",m:""},{t:"昼",p:"",m:""},{t:"移動",p:"空港・帰国",m:""}],entries:[{time:"",event:""},{time:"",event:"空港・帰国"}]}
 ];
 const CATS=["コスメ・スキンケア","ファッション","グッズ・雑貨","食べもの・お菓子"];
-let curCat=CATS[0];
-let wishes={};CATS.forEach(c=>wishes[c]=[]);
-let shops=[{name:"",memo:"",done:false}];
 const PACK={
   "パスポート・書類":["パスポート","航空券（印刷 / アプリ）","ホテル予約確認書","旅行保険証書","現金（ウォン）"],
   "ガジェット":["充電器","モバイルバッテリー","変換プラグ（Aタイプ）","イヤホン","カメラ"],
   "服・アクセサリー":["着替え（3日分）","パジャマ","下着","羽織り物","サングラス"],
   "コスメ・衛生用品":["日焼け止め","スキンケア","メイク道具","歯ブラシ","常備薬"]
 };
-let packDone={};
-let pendingIdx=null;
-let pendingCat=null;
 
+/* ━━━ localStorage ━━━ */
+const LS={
+  save(key,val){try{localStorage.setItem('korea25_'+key,JSON.stringify(val));}catch(e){}},
+  load(key,def){try{const v=localStorage.getItem('korea25_'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
+};
+
+/* ━━━ 状態 ━━━ */
+let daysData=LS.load('days', DEFAULT_DAYS.map(d=>({...d,slots:d.slots.map(s=>({...s})),entries:d.entries.map(e=>({...e}))})));
+let curCat=LS.load('curCat',CATS[0]);
+let wishes=LS.load('wishes',(()=>{const w={};CATS.forEach(c=>w[c]=[]);return w;})());
+let shops=LS.load('shops',[{name:"",memo:"",done:false}]);
+let packDone=LS.load('packDone',{});
+
+/* ━━━ 自動保存（debounce 800ms） ━━━ */
+let _saveTimer=null;
+function save(){
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(()=>{
+    LS.save('days',daysData);
+    LS.save('curCat',curCat);
+    LS.save('wishes',wishes);
+    LS.save('shops',shops);
+    LS.save('packDone',packDone);
+  },800);
+}
+
+/* ━━━ スケジュール ━━━ */
 function buildSchedule(){
-  document.getElementById('days-wrap').innerHTML=DAYS_DATA.map((day,di)=>
-    `<div class="day-block">
-      <div class="day-badge">${day.label}</div>
-      ${day.slots.map((s,si)=>`
-        <div class="tl-row">
-          <div class="tl-time">${s.t}</div>
-          <div class="tl-card">
-            <input placeholder="${s.p||'予定を入力'}" value="${s.p}" oninput="DAYS_DATA[${di}].slots[${si}].p=this.value">
-            <div class="memo-row">${SVG.pin}<input placeholder="お店名・住所など" value="${s.m}" oninput="DAYS_DATA[${di}].slots[${si}].m=this.value"></div>
-          </div>
-        </div>`).join('')}
-      <button class="add-slot-btn" onclick="addSlot(${di})">${SVG.plus}予定を追加</button>
-    </div>`).join('');
+  document.getElementById('days-wrap').innerHTML=daysData.map((day,di)=>{
+    const isDetailed=day.mode==='detail';
+    return`<div class="day-block">
+      <div class="day-header">
+        <div class="day-badge">${day.label}</div>
+        <div class="mode-toggle">
+          <button class="mode-btn${!isDetailed?' active':''}" onclick="setMode(${di},'rough')">大まか</button>
+          <button class="mode-btn${isDetailed?' active':''}" onclick="setMode(${di},'detail')">時間割</button>
+        </div>
+      </div>
+      ${isDetailed ? buildDetailedDay(day,di) : buildRoughDay(day,di)}
+    </div>`;
+  }).join('');
 }
 
-function addSlot(di){
-  DAYS_DATA[di].slots.push({t:"",p:"",m:""});
+function buildRoughDay(day,di){
+  return day.slots.map((s,si)=>`
+    <div class="tl-row">
+      <div class="tl-time">${s.t||'　'}</div>
+      <div class="tl-card">
+        <input placeholder="${s.p||'予定を入力'}" value="${esc(s.p)}"
+          oninput="daysData[${di}].slots[${si}].p=this.value;save()">
+        <div class="memo-row">${SVG.pin}
+          <input placeholder="お店名・住所など" value="${esc(s.m)}"
+            oninput="daysData[${di}].slots[${si}].m=this.value;save()">
+        </div>
+      </div>
+    </div>`).join('')+
+  `<button class="add-slot-btn" onclick="addSlot(${di})">${SVG.plus}予定を追加</button>`;
+}
+
+function buildDetailedDay(day,di){
+  return`<div class="timeline-wrap">
+    ${day.entries.map((e,ei)=>`
+      <div class="time-entry">
+        <div class="time-dot"></div>
+        <div class="time-entry-body">
+          <input class="time-input" placeholder="時刻" value="${esc(e.time)}"
+            oninput="daysData[${di}].entries[${ei}].time=this.value;save()">
+          <div class="time-divider"></div>
+          <input class="event-input" placeholder="予定を入力" value="${esc(e.event)}"
+            oninput="daysData[${di}].entries[${ei}].event=this.value;save()">
+          <button class="entry-del" onclick="delEntry(${di},${ei})">${SVG.x}</button>
+        </div>
+      </div>`).join('')}
+  </div>
+  <button class="add-slot-btn" onclick="addEntry(${di})">${SVG.plus}追加</button>`;
+}
+
+function setMode(di,mode){
+  daysData[di].mode=mode;
+  save();
   buildSchedule();
-  setTimeout(()=>{const c=document.querySelectorAll('.day-block')[di];const i=c.querySelectorAll('.tl-card input');if(i.length)i[i.length-2].focus();},50);
+}
+function addSlot(di){
+  daysData[di].slots.push({t:"",p:"",m:""});
+  save();buildSchedule();
+  setTimeout(()=>{const c=document.querySelectorAll('.day-block')[di];const ins=c.querySelectorAll('.tl-card input');if(ins.length)ins[ins.length-2].focus();},50);
+}
+function addEntry(di){
+  daysData[di].entries.push({time:"",event:""});
+  save();buildSchedule();
+  setTimeout(()=>{const c=document.querySelectorAll('.day-block')[di];const ins=c.querySelectorAll('.event-input');if(ins.length)ins[ins.length-1].focus();},50);
+}
+function delEntry(di,ei){
+  daysData[di].entries.splice(ei,1);
+  save();buildSchedule();
 }
 
+/* ━━━ 買いもの ━━━ */
 function buildCats(){
-  document.getElementById('cat-scroll').innerHTML=CATS.map(c=>`<button class="cat-pill${c===curCat?' active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
+  document.getElementById('cat-scroll').innerHTML=CATS.map(c=>
+    `<button class="cat-pill${c===curCat?' active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
 }
-function switchCat(c){curCat=c;buildCats();buildWishes();}
+function switchCat(c){curCat=c;save();buildCats();buildWishes();}
 
 function buildWishes(){
-  const items=wishes[curCat];
-  const esc=s=>(s||'').replace(/"/g,'&quot;');
+  const items=wishes[curCat]||[];
   document.getElementById('wish-grid').innerHTML=
     items.map((w,i)=>`
       <div class="wish-card">
@@ -186,15 +285,24 @@ function buildWishes(){
         <button class="wish-chk${w.done?' done':''}" onclick="toggleWish(${i})">${SVG.check}</button>
         <button class="wish-del" onclick="delWish(${i})">${SVG.x}</button>
         <div class="wish-body">
-          <input class="nm" placeholder="商品名" value="${esc(w.name)}" oninput="wishes[curCat][${i}].name=this.value">
-          <input class="pr" placeholder="予算（例: ₩15,000）" value="${esc(w.price)}" oninput="wishes[curCat][${i}].price=this.value">
+          <input class="nm" placeholder="商品名" value="${esc(w.name)}"
+            oninput="wishes[curCat][${i}].name=this.value;save()">
+          <input class="pr" placeholder="予算（例: ₩15,000）" value="${esc(w.price)}"
+            oninput="wishes[curCat][${i}].price=this.value;save()">
         </div>
       </div>`).join('')+
     `<div class="add-wish" onclick="addWish()">${SVG.plus}<span>追加</span></div>`;
 }
-function addWish(){wishes[curCat].push({name:'',price:'',img:'',done:false});buildWishes();setTimeout(()=>{const n=document.querySelectorAll('.wish-body input.nm');if(n.length)n[n.length-1].focus();},50);}
-function delWish(i){wishes[curCat].splice(i,1);buildWishes();}
-function toggleWish(i){wishes[curCat][i].done=!wishes[curCat][i].done;buildWishes();}
+function addWish(){
+  if(!wishes[curCat])wishes[curCat]=[];
+  wishes[curCat].push({name:'',price:'',img:'',done:false});
+  save();buildWishes();
+  setTimeout(()=>{const n=document.querySelectorAll('.wish-body input.nm');if(n.length)n[n.length-1].focus();},50);
+}
+function delWish(i){wishes[curCat].splice(i,1);save();buildWishes();}
+function toggleWish(i){wishes[curCat][i].done=!wishes[curCat][i].done;save();buildWishes();}
+
+/* 画像アップロード（iOSバグ対策：data属性で状態保持） */
 function pickImg(i){
   const inp=document.getElementById('img-file');
   inp.dataset.idx=i;
@@ -208,30 +316,38 @@ document.getElementById('img-file').addEventListener('change',function(){
   if(!f||isNaN(idx)||!cat)return;
   const r=new FileReader();
   r.onload=e=>{
+    if(!wishes[cat])wishes[cat]=[];
     wishes[cat][idx].img=e.target.result;
     curCat=cat;
-    buildWishes();
+    save();buildWishes();
   };
   r.readAsDataURL(f);
   this.value='';
-  delete this.dataset.idx;
-  delete this.dataset.cat;
+  delete this.dataset.idx;delete this.dataset.cat;
 });
 
+/* ━━━ お店 ━━━ */
 function buildShops(){
   document.getElementById('shops-wrap').innerHTML=shops.map((s,i)=>`
     <div class="shop-card">
       <div class="shop-icon">${SVG.pin}</div>
       <div class="shop-info">
-        <input class="nm" placeholder="お店・スポット名" value="${s.name}" oninput="shops[${i}].name=this.value">
-        <input class="sub" placeholder="エリア・メモ" value="${s.memo}" oninput="shops[${i}].memo=this.value">
+        <input class="nm" placeholder="お店・スポット名" value="${esc(s.name)}"
+          oninput="shops[${i}].name=this.value;save()">
+        <input class="sub" placeholder="エリア・メモ" value="${esc(s.memo)}"
+          oninput="shops[${i}].memo=this.value;save()">
       </div>
       <button class="shop-vis${s.done?' done':''}" onclick="toggleShop(${i})">${SVG.check}</button>
     </div>`).join('');
 }
-function addShop(){shops.push({name:'',memo:'',done:false});buildShops();setTimeout(()=>{const n=document.querySelectorAll('.shop-info input.nm');if(n.length)n[n.length-1].focus();},50);}
-function toggleShop(i){shops[i].done=!shops[i].done;buildShops();}
+function addShop(){
+  shops.push({name:'',memo:'',done:false});
+  save();buildShops();
+  setTimeout(()=>{const n=document.querySelectorAll('.shop-info input.nm');if(n.length)n[n.length-1].focus();},50);
+}
+function toggleShop(i){shops[i].done=!shops[i].done;save();buildShops();}
 
+/* ━━━ 持ちもの ━━━ */
 function buildPack(){
   document.getElementById('pack-wrap').innerHTML=Object.entries(PACK).map(([cat,items])=>`
     <div class="pack-cat">
@@ -243,8 +359,9 @@ function buildPack(){
         </div>`;}).join('')}
     </div>`).join('');
 }
-function togglePack(k){packDone[k]=!packDone[k];buildPack();}
+function togglePack(k){packDone[k]=!packDone[k];save();buildPack();}
 
+/* ━━━ タブ ━━━ */
 function switchTab(name,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -252,6 +369,10 @@ function switchTab(name,btn){
   btn.classList.add('active');
 }
 
+/* ━━━ ユーティリティ ━━━ */
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+/* ━━━ 初期化 ━━━ */
 buildSchedule();buildCats();buildWishes();buildShops();buildPack();
 </script>
 </body>
