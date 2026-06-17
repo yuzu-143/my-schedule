@@ -286,27 +286,43 @@ function buildWishes(){
   const items=wishes[curCat]||[];
   document.getElementById('wish-grid').innerHTML=
     items.map((w,i)=>`
-      <div class="wish-card">
+      <div class="wish-card" data-cat="${curCat}" data-idx="${i}">
         ${w.img?`<img class="wish-thumb" src="${w.img}">`:`<div class="wish-placeholder" onclick="pickImg(${i})">${SVG.cam}</div>`}
         <button class="wish-chk${w.done?' done':''}" onclick="toggleWish(${i})">${SVG.check}</button>
         <button class="wish-del" onclick="delWish(${i})">${SVG.x}</button>
         <div class="wish-body">
           <input class="nm" placeholder="商品名" value="${esc(w.name)}"
-            oninput="setWishField('${curCat}',${i},'name',this.value)">
+            oninput="wishInput(this,'name')">
           <input class="pr" placeholder="予算（例: ₩15,000）" value="${esc(w.price)}"
-            oninput="setWishField('${curCat}',${i},'price',this.value)">
+            oninput="wishInput(this,'price')">
         </div>
       </div>`).join('')+
     `<div class="add-wish" onclick="addWish()">${SVG.plus}<span>追加</span></div>`;
 }
+function wishInput(el,field){
+  const card=el.closest('.wish-card');
+  const cat=card.dataset.cat;
+  const idx=parseInt(card.dataset.idx,10);
+  if(!wishes[cat])wishes[cat]=[];
+  if(wishes[cat][idx])wishes[cat][idx][field]=el.value;
+  save();
+}
 function addWish(){
-  if(!wishes[curCat])wishes[curCat]=[];
-  wishes[curCat].push({name:'',price:'',img:'',done:false});
+  const cat=curCat;
+  if(!wishes[cat])wishes[cat]=[];
+  wishes[cat].push({name:'',price:'',img:'',done:false});
   save();buildWishes();
   setTimeout(()=>{const n=document.querySelectorAll('.wish-body input.nm');if(n.length)n[n.length-1].focus();},50);
 }
-function delWish(i){wishes[curCat].splice(i,1);save();buildWishes();}
-function toggleWish(i){wishes[curCat][i].done=!wishes[curCat][i].done;save();buildWishes();}
+function delWish(i){
+  if(wishes[curCat]){wishes[curCat].splice(i,1);save();buildWishes();}
+}
+function toggleWish(i){
+  if(wishes[curCat]&&wishes[curCat][i]){
+    wishes[curCat][i].done=!wishes[curCat][i].done;
+    save();buildWishes();
+  }
+}
 
 /* 画像アップロード（iOSバグ対策：data属性で状態保持） */
 function pickImg(i){
