@@ -182,7 +182,13 @@ const LS={
 let daysData=LS.load('days', DEFAULT_DAYS.map(d=>({...d,slots:d.slots.map(s=>({...s})),entries:d.entries.map(e=>({...e}))})));
 let curCatIdx=LS.load('curCatIdx',0);
 let curCat=CATS[curCatIdx];
-let wishes=LS.load('wishes',(()=>{const w={};CATS.forEach(c=>w[c]=[]);return w;})());
+let wishes=(()=>{
+  const saved=LS.load('wishes',null);
+  const w={};
+  CATS.forEach(c=>w[c]=[]); // デフォルト
+  if(saved){CATS.forEach(c=>{if(Array.isArray(saved[c]))w[c]=saved[c];});}
+  return w;
+})();
 let shops=LS.load('shops',[{name:"",memo:"",done:false}]);
 let packDone=LS.load('packDone',{});
 
@@ -272,10 +278,10 @@ function delEntry(di,ei){
 
 /* ━━━ 買いもの ━━━ */
 function buildCats(){
-  document.getElementById('cat-scroll').innerHTML=CATS.map(c=>
-    `<button class="cat-pill${c===curCat?' active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
+  document.getElementById('cat-scroll').innerHTML=CATS.map((c,idx)=>
+    `<button class="cat-pill${idx===curCatIdx?' active':''}" onclick="switchCat(${idx})">${c}</button>`).join('');
 }
-function switchCat(c){curCat=c;curCatIdx=CATS.indexOf(c);save();buildCats();buildWishes();}
+function switchCat(idx){curCatIdx=idx;curCat=CATS[idx];save();buildCats();buildWishes();}
 
 function setWishField(cat,i,field,val){
   if(!wishes[cat])wishes[cat]=[];
