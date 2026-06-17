@@ -180,7 +180,8 @@ const LS={
 
 /* ━━━ 状態 ━━━ */
 let daysData=LS.load('days', DEFAULT_DAYS.map(d=>({...d,slots:d.slots.map(s=>({...s})),entries:d.entries.map(e=>({...e}))})));
-let curCat=LS.load('curCat',CATS[0]);
+let curCatIdx=LS.load('curCatIdx',0);
+let curCat=CATS[curCatIdx];
 let wishes=LS.load('wishes',(()=>{const w={};CATS.forEach(c=>w[c]=[]);return w;})());
 let shops=LS.load('shops',[{name:"",memo:"",done:false}]);
 let packDone=LS.load('packDone',{});
@@ -191,7 +192,7 @@ function save(){
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>{
     LS.save('days',daysData);
-    LS.save('curCat',curCat);
+    LS.save('curCatIdx',curCatIdx);
     LS.save('wishes',wishes);
     LS.save('shops',shops);
     LS.save('packDone',packDone);
@@ -274,8 +275,13 @@ function buildCats(){
   document.getElementById('cat-scroll').innerHTML=CATS.map(c=>
     `<button class="cat-pill${c===curCat?' active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
 }
-function switchCat(c){curCat=c;save();buildCats();buildWishes();}
+function switchCat(c){curCat=c;curCatIdx=CATS.indexOf(c);save();buildCats();buildWishes();}
 
+function setWishField(cat,i,field,val){
+  if(!wishes[cat])wishes[cat]=[];
+  if(wishes[cat][i])wishes[cat][i][field]=val;
+  save();
+}
 function buildWishes(){
   const items=wishes[curCat]||[];
   document.getElementById('wish-grid').innerHTML=
@@ -286,9 +292,9 @@ function buildWishes(){
         <button class="wish-del" onclick="delWish(${i})">${SVG.x}</button>
         <div class="wish-body">
           <input class="nm" placeholder="商品名" value="${esc(w.name)}"
-            oninput="wishes[curCat][${i}].name=this.value;save()">
+            oninput="setWishField('${curCat}',${i},'name',this.value)">
           <input class="pr" placeholder="予算（例: ₩15,000）" value="${esc(w.price)}"
-            oninput="wishes[curCat][${i}].price=this.value;save()">
+            oninput="setWishField('${curCat}',${i},'price',this.value)">
         </div>
       </div>`).join('')+
     `<div class="add-wish" onclick="addWish()">${SVG.plus}<span>追加</span></div>`;
